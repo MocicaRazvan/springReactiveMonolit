@@ -73,7 +73,10 @@ export async function fetchStream<T = any, E extends BaseError = BaseError>({
   const url = combinedQuery ? `${path}?${combinedQuery}` : path;
 
   try {
-    const res = await fetch(`http://localhost:8080${url}`, fetchOptions);
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_SPRING}${url}`,
+      fetchOptions
+    );
     const stream = ndjsonStream<T, E>(res.body);
     const reader = stream.getReader();
 

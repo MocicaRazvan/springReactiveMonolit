@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.data.r2dbc.DataR2dbcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -29,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("tc")
 @Import(TrxStepVerifierTestConfig.class)
 @Testcontainers
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class TrainingRepositoryTest extends AbstractPostgresContainerBase {
 
     @Autowired
@@ -228,7 +230,7 @@ class TrainingRepositoryTest extends AbstractPostgresContainerBase {
                 .assertNext(count -> assertEquals(0, count))
                 .verifyComplete();
     }
-    
+
 
     @Test
     void find_all_by_userId_and_title_containing() {

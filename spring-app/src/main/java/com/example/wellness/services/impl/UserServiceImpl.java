@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Flux<PageableResponse<UserDto>> getAllUsers(PageableBody pageableBody, Set<Role> roles, String email) {
 
-        final String emailToSearch = email == null ? "" : email;
+        String emailToSearch = email == null ? "" : email;
         if (roles == null) {
             roles = new HashSet<>();
         }
@@ -63,8 +63,8 @@ public class UserServiceImpl implements UserService {
         final Set<Role> finalRoles = roles;
         return pageableUtilsCustom.isSortingCriteriaValid(pageableBody.getSortingCriteria(), allowedSortingFields)
                 .then(pageableUtilsCustom.createPageRequest(pageableBody))
-                .flatMapMany(pr -> pageableUtilsCustom.createPageableResponse(userRepository.findAllByRoleInAndEmailContainingIgnoreCase(finalRoles, email, pr).map(userMapper::fromUserCustomToUserDto),
-                        userRepository.countAllByRoleInAndEmailContainingIgnoreCase(finalRoles, email), pr)
+                .flatMapMany(pr -> pageableUtilsCustom.createPageableResponse(userRepository.findAllByRoleInAndEmailContainingIgnoreCase(finalRoles, emailToSearch, pr).map(userMapper::fromUserCustomToUserDto),
+                        userRepository.countAllByRoleInAndEmailContainingIgnoreCase(finalRoles, emailToSearch), pr)
                 );
 
 

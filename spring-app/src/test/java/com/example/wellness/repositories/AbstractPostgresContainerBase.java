@@ -1,5 +1,7 @@
 package com.example.wellness.repositories;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -17,7 +19,8 @@ public abstract class AbstractPostgresContainerBase {
             .withPassword("123456")
             .withInitScript("schema-tc.sql");
 
-    static {
+    @BeforeAll
+    static void startContainer() {
         postgresqlContainer.start();
     }
 
@@ -31,5 +34,8 @@ public abstract class AbstractPostgresContainerBase {
         registry.add("spring.r2dbc.password", postgresqlContainer::getPassword);
     }
 
-
+    @AfterAll
+    static void stopContainer() {
+        postgresqlContainer.stop();
+    }
 }

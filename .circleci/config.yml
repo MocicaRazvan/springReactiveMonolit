@@ -1,0 +1,65 @@
+version: 2.1
+# can remove postgres from here, the test are not running on it, will let it for now
+jobs:
+  build-and-test-spring:
+    working_directory: ~/project/spring-app
+    docker:
+      - image: cimg/openjdk:21.0.2
+      - image: cimg/postgres:16.2
+        environment:
+          POSTGRES_DB: wellness
+          POSTGRES_USER: myuser
+          POSTGRES_PASSWORD: mypassword
+        command: ["postgres", "-c", "port=5444"]
+    steps:
+      - checkout
+      - run:
+            name: Waiting for POSTGRES to be ready
+            command: |
+              for i in `seq 1 10`;
+              do
+                nc -z 127.0.0.1 5444 && echo Success && exit 0
+                echo -n .
+                sleep 1
+              done
+              echo Failed waiting for POSTGRES && exit 1
+      - run:
+          name: Build
+          command: mvn -B -DskipTests clean package
+      - run:
+          name: Test
+          command: mvn test
+      - store_test_results:
+          path: target/surefire-reports
+      - store_artifacts:
+          path: target/surefire-reports
+          destination: test-reports
+  build-next:
+    working_directory: ~/project/client-next
+    docker:
+      - image: cimg/node:lts
+    environment:
+      NEXTAUTH_URL: "http://localhost:3000"
+      NEXTAUTH_SECRET: "tgY5i4Ea/GZIYMC3J76rANVMf/Cyj0410bSulEicArM="
+      NEXT_PUBLIC_SPRING: "http://localhost:8080"
+      NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: "lamatutorial"
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: npm install
+      - run:
+          name: Build
+          command: npm run build
+      - store_artifacts:
+          path: .next
+          destination: next-build-artifacts
+   
+
+workflows:
+  build-and-test:
+    jobs:
+      - build-and-test-spring
+      - build-next:
+          requires:
+            - build-and-test-spring
