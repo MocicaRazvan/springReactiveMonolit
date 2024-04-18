@@ -1,6 +1,15 @@
 version: 2.1
 # can remove postgres from here, the test are not running on it, will let it for now
 jobs:
+  checkout_code:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - ./*
   build-and-test-spring:
     working_directory: ~/project/spring-app
     docker:
@@ -59,7 +68,10 @@ jobs:
 workflows:
   build-and-test:
     jobs:
-      - build-and-test-spring
+      - checkout_code
+      - build-and-test-spring:
+          requires:
+            - checkout_code
       - build-next:
           requires:
-            - build-and-test-spring
+            - checkout_code
