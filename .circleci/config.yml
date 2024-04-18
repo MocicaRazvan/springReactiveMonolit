@@ -62,7 +62,7 @@ jobs:
       - attach_workspace:
           at: ~/project
       - restore_cache:
-          key: node-dependencies-{{ checksum "package.json" }
+          key: node-dependencies-{{ checksum "package.json" }}
       - run:
           name: List files
           command: ls -l
