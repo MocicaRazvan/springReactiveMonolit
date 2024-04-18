@@ -21,7 +21,6 @@ jobs:
           POSTGRES_PASSWORD: mypassword
         command: ["postgres", "-c", "port=5444"]
     steps:
-      - checkout
       - run:
             name: Waiting for POSTGRES to be ready
             command: |
@@ -53,7 +52,6 @@ jobs:
       NEXT_PUBLIC_SPRING: "http://localhost:8080"
       NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: "lamatutorial"
     steps:
-      - checkout
       - run:
           name: Install dependencies
           command: npm install
