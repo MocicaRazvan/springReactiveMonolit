@@ -23,6 +23,8 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/project
+      - restore_cache:
+          key: spring-dependencies-{{ checksum "pom.xml" }}
       - run:
           name: List files
           command: ls -l
@@ -59,6 +61,8 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/project
+      - restore_cache:
+          key: node-dependencies-{{ checksum "package.json" }
       - run:
           name: List files
           command: ls -l

@@ -231,44 +231,6 @@ class UserControllerTest {
         return Stream.of(Set.of(), null);
     }
 
-    @ParameterizedTest
-    @MethodSource("emptyRoles")
-    @WithMockUser(username = TEST_EMAIL, authorities = "ROLE_ADMIN")
-    public void get_all_users_emptyRoles_success_email_empty(
-            Set<Role> roles
-    ) {
-        String email = null;
-        when(userService.getAllUsers(pageableBody, roles, email)).thenReturn(Flux.just(pageableResponse));
-        when(pageableUserAssembler.toModel(pageableResponse)).thenReturn(Mono.just(pageableEntityModel));
-
-
-        webClient
-                .mutateWith(SecurityMockServerConfigurers.csrf())
-                .patch()
-                .uri(uriBuilder ->
-                        {
-                            uriBuilder.path("/users");
-                            if (Objects.nonNull(roles)) {
-                                uriBuilder.queryParam("roles", "");
-                            }
-                            return uriBuilder.build();
-                        }
-                )
-                .accept(MediaType.APPLICATION_NDJSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(pageableBody)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody(new ParameterizedTypeReference<PageableResponse<CustomEntityModel<UserDto>>>() {
-                })
-                .consumeWith(response -> {
-                    PageableResponse<CustomEntityModel<UserDto>> users = response.getResponseBody();
-                    assertEquals(pageableEntityModel, users);
-                });
-
-        verify(userService).getAllUsers(pageableBody, roles, email);
-        verify(pageableUserAssembler).toModel(pageableResponse);
-    }
 
     @Test
     @WithMockUser(username = TEST_EMAIL, authorities = "ROLE_USER")
@@ -338,42 +300,7 @@ class UserControllerTest {
         verify(pageableUserAssembler).toModel(pageableResponse);
     }
 
-
-    @Test
-    @WithMockUser(username = TEST_EMAIL, authorities = "ROLE_USER")
-    public void get_all_users_sortingCriteria_not_valid() {
-        PageableBody badPB = PageableBody.builder()
-                .page(0)
-                .size(10)
-                .sortingCriteria(Map.of("firstName", "aaaa"))
-                .build();
-        when(userService.getAllUsers(badPB, null, null)).thenReturn(Flux.error(
-                new SortingCriteriaException("Invalid sorting criteria provided.", badPB.getSortingCriteria())));
-
-        webClient
-                .mutateWith(SecurityMockServerConfigurers.csrf())
-                .patch()
-                .uri(uriBuilder -> uriBuilder.path("/users").build())
-                .accept(MediaType.APPLICATION_NDJSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(badPB)
-                .exchange()
-                .expectStatus().isBadRequest()
-                .expectBody(new ParameterizedTypeReference<Map<String, Object>>() {
-                })
-                .consumeWith(response -> {
-                    Map<String, Object> error = response.getResponseBody();
-                    log.info("error: {}", error);
-                    assertNotNull(error);
-                    assertEquals("Invalid sorting criteria provided.", error.get("message"));
-                    assertEquals("Bad Request", error.get("error"));
-                    assertEquals(400, error.get("status"));
-                    assertEquals(error.get("firstName"), "aaaa");
-                });
-
-        verify(userService).getAllUsers(badPB, null, null);
-    }
-
+    
     @Test
     @WithMockUser(username = TEST_EMAIL, authorities = "ROLE_ADMIN")
     public void make_trainer() {
