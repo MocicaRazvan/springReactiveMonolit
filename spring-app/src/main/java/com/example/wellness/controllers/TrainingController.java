@@ -43,7 +43,7 @@ public class TrainingController implements ApproveController
     @ResponseStatus(HttpStatus.OK)
     public Flux<PageableResponse<CustomEntityModel<TrainingResponse>>> getModelsApproved(@RequestParam(required = false) String title, @Valid @RequestBody PageableBody pageableBody) {
         return trainingService.getModelsApproved(title, pageableBody)
-//                .delayElements(Duration.ofSeconds(2))
+//                .delayElements(Duration.ofSeconds(2)) // for testing
                 .flatMap(m -> trainingReactiveResponseBuilder.toModelPageable(m, TrainingController.class));
     }
 
