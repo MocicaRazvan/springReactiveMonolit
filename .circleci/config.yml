@@ -56,8 +56,9 @@ jobs:
       - run:
           name: Run Tests
           command: |
-            TEST_FILES=$(circleci tests split --split-by=timings < /tmp/tests/test_list.txt)
-            mvn -e test -Dtest=$(echo $TEST_FILES | tr '\n' ',' | sed 's/,$//')
+            TEST_CLASSES=$(cat /tmp/tests/test_list.txt | sed 's/src\/test\/java\///' | sed 's/\//./g' | sed 's/\.java//')
+            TEST_CLASSES=$(circleci tests split --split-by=timings --timings-type=classname <<< "$TEST_CLASSES")
+            mvn test -Dtest=$(echo $TEST_CLASSES | tr '\n' ',' | sed 's/,$//')
           no_output_timeout: 30m
       - run:
           name: Save test results
