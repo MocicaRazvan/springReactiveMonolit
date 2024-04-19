@@ -159,7 +159,22 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.1.2</version>
                 <configuration>
+                    <parallel>methods</parallel>
+                    <threadCount>4</threadCount>
+                    <perCoreThreadCount>false</perCoreThreadCount>
+                    <useUnlimitedThreads>false</useUnlimitedThreads>
                     <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+                    <useFile>true</useFile>
+                    <includes>
+                        <include>**/*Tests.java</include>
+                        <include>**/*Test.java</include>
+                    </includes>
+                    <properties>
+                        <property>
+                            <name>listener</name>
+                            <value>org.junit.platform.launcher.listeners.LegacyXmlReportGeneratingListener</value>
+                        </property>
+                    </properties>
                 </configuration>
             </plugin>
         </plugins>
