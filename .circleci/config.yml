@@ -49,8 +49,16 @@ jobs:
           paths:
             - ~/.m2
       - run:
-          name: Test
-          command: mvn test
+          name: Prepare Test Splitting
+          command: |
+            mkdir -p /tmp/tests
+            circleci tests glob "src/test/java/**/*.java" > /tmp/tests/test_list.txt
+      - run:
+          name: Run Tests
+          command: |
+            TEST_FILES=$(circleci tests split --split-by=timings < /tmp/tests/test_list.txt)
+            mvn -e test -Dtest=$(echo $TEST_FILES | tr '\n' ',' | sed 's/,$//')
+          no_output_timeout: 30m
       - run:
           name: Save test results
           command: |
