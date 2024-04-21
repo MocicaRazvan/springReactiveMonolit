@@ -263,7 +263,7 @@ const MultipleSelector = React.forwardRef<
           await doSearch();
         }
 
-        if (debouncedSearchTerm) {
+        if (debouncedSearchTerm != undefined) {
           await doSearch();
         }
       };

@@ -83,6 +83,16 @@ export default function TrainingsForm({
     [JSON.stringify(userExercises)]
   );
 
+  const handleSearch = useCallback(
+    async (search: string) => {
+      console.log(search);
+      return exerciseIds.filter(({ label }) =>
+        label.toLowerCase().includes(search.toLowerCase())
+      );
+    },
+    [exerciseIds]
+  );
+
   const onSubmit = useCallback(
     async (values: TrainingType) => {
       if (!authUser?.token) return;
@@ -182,6 +192,7 @@ export default function TrainingsForm({
                   <FormLabel>Select The exercises for the training</FormLabel>
                   <FormControl>
                     <MultipleSelector
+                      onSearch={handleSearch}
                       value={field.value}
                       onChange={field.onChange}
                       defaultOptions={exerciseIds}
