@@ -19,39 +19,51 @@ import { BaseError } from "@/types/responses";
 import { useSession } from "next-auth/react";
 import { notFound, useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useGetExercise } from "@/app/(main)/(items)/exercises/single/hook";
+import { Button } from "@/components/ui/button";
 
 export default function SingleExercise() {
-  const [exerciseState, setExerciseState] = useState<ExerciseResponse | null>(
-    null
-  );
-  const { id } = useParams();
-  const session = useSession();
-  const router = useRouter();
-
-  const authUser = session.data?.user;
-
-  const { messages, error, refetch } = useFetchStream<
-    ExerciseResponseWithTrainingCount,
-    BaseError
-  >({
-    path: `/exercises/withTrainingCount/${id}`,
-    method: "GET",
-    authToken: true,
-  });
-
-  useEffect(() => {
-    if (messages.length > 0) {
-      setExerciseState(messages[0]);
-    }
-  }, [JSON.stringify(messages)]);
-
+  // const [exerciseState, setExerciseState] = useState<ExerciseResponse | null>(
+  //   null
+  // );
+  // const { id } = useParams();
+  // const session = useSession();
+  // const router = useRouter();
+  //
+  // const authUser = session.data?.user;
+  //
+  // const { messages, error, refetch } = useFetchStream<
+  //   ExerciseResponseWithTrainingCount,
+  //   BaseError
+  // >({
+  //   path: `/exercises/withTrainingCount/${id}`,
+  //   method: "GET",
+  //   authToken: true,
+  // });
+  //
+  // useEffect(() => {
+  //   if (messages.length > 0) {
+  //     setExerciseState(messages[0]);
+  //   }
+  // }, [JSON.stringify(messages)]);
+  const {
+    exerciseState,
+    setExerciseState,
+    messages,
+    error,
+    refetch,
+    authUser,
+    router,
+    session,
+    id,
+  } = useGetExercise();
   if (error?.status) {
     notFound();
   }
 
   if (!authUser || !messages[0])
     return (
-      <section className="w-full min-h-[calc(100vh-4rem)] flex items-center justify-center transition-all">
+      <section className="w-full min-h-[calc(100vh-4rem)] flex items-center justify-center transition-all overflow-hidden">
         <Loader className="w-full" />
       </section>
     );
@@ -87,7 +99,7 @@ export default function SingleExercise() {
         <CustomImageCarousel images={exercise?.images} />
       )}
       {isOwnerOrAdmin && messages[0].trainingCount === 0 && (
-        <div className="sticky bottom-3 my-7 flex items-center justify-center">
+        <div className="sticky bottom-3 my-7 flex items-center justify-center gap-4">
           <AlertDialogDeleteExercise
             exercise={exercise}
             token={session.data?.user?.token}
@@ -97,35 +109,44 @@ export default function SingleExercise() {
                 : router.push(`/trainer/user/${authUser.id}/exercises`);
             }}
           />
+          {isOwner && messages[0].trainingCount === 0 && (
+            <Button
+              onClick={() => {
+                router.push(`/exercises/single/${id}/update/`);
+              }}
+            >
+              Update Exercise
+            </Button>
+          )}
         </div>
       )}
-      {isOwner && messages[0].trainingCount === 0 && (
-        <Accordion
-          type="single"
-          collapsible
-          className="w-1/2 mx-auto mt-10 z-50"
-        >
-          <AccordionItem value="item-1">
-            <AccordionTrigger>Update Exercise</AccordionTrigger>
-            <AccordionContent>
-              <ExerciseForm
-                path={`/exercises/update/${exercise.id}`}
-                method="PUT"
-                body={exercise.body}
-                title={exercise.title}
-                images={exercise.images}
-                videos={exercise.videos}
-                muscleGroups={exercise.muscleGroups.map((m) => ({
-                  label: m,
-                  value: m,
-                }))}
-                submitText="Update Exercise"
-                callback={refetch}
-              />
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      )}
+      {/*{isOwner && messages[0].trainingCount === 0 && (*/}
+      {/*  <Accordion*/}
+      {/*    type="single"*/}
+      {/*    collapsible*/}
+      {/*    className="w-1/2 mx-auto mt-10 z-50"*/}
+      {/*  >*/}
+      {/*    <AccordionItem value="item-1">*/}
+      {/*      <AccordionTrigger>Update Exercise</AccordionTrigger>*/}
+      {/*      <AccordionContent>*/}
+      {/*        <ExerciseForm*/}
+      {/*          path={`/exercises/update/${exercise.id}`}*/}
+      {/*          method="PUT"*/}
+      {/*          body={exercise.body}*/}
+      {/*          title={exercise.title}*/}
+      {/*          images={exercise.images}*/}
+      {/*          videos={exercise.videos}*/}
+      {/*          muscleGroups={exercise.muscleGroups.map((m) => ({*/}
+      {/*            label: m,*/}
+      {/*            value: m,*/}
+      {/*          }))}*/}
+      {/*          submitText="Update Exercise"*/}
+      {/*          callback={refetch}*/}
+      {/*        />*/}
+      {/*      </AccordionContent>*/}
+      {/*    </AccordionItem>*/}
+      {/*  </Accordion>*/}
+      {/*)}*/}
     </section>
   );
 }

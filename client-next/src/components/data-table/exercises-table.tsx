@@ -191,6 +191,20 @@ export default function ExercisesTable({ path, title, forWhom }: Props) {
                 >
                   View exercise
                 </DropdownMenuItem>
+                {forWhom === "trainer" && (
+                  <>
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href={`/exercises/single/${row.original.id}/update/`}
+                        className={"cursor-pointer"}
+                      >
+                        Update exercise
+                      </Link>
+                    </DropdownMenuItem>
+
+                    <DropdownMenuSeparator />
+                  </>
+                )}
                 {session?.data?.user?.role === "ROLE_ADMIN" &&
                   session?.data?.user?.token &&
                   !row.original.approved && (

@@ -201,6 +201,18 @@ export default function TrainingsTable({ path, title, forWhom }: Props) {
                     </Link>
                   </DropdownMenuItem>
                 )}
+                {forWhom === "trainer" && (
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href={
+                        `/trainings/single/${row.original.id}/update/?exercises=` +
+                        row.original.exercises.join(`,`)
+                      }
+                    >
+                      Update Training
+                    </Link>
+                  </DropdownMenuItem>
+                )}
 
                 <div className="h-1" />
                 {isAdmin &&

@@ -21,23 +21,36 @@ import { Avatar } from "@radix-ui/react-avatar";
 import { AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import AlertDialogDeletePost from "@/components/dialogs/posts/delete-post";
+import { useGetPost } from "@/app/(main)/(items)/posts/single/hook";
+import { Button } from "@/components/ui/button";
 
 export default function SinglePost() {
-  const [postState, setPostState] = useState<PostResponse | null>(null);
-  const { id } = useParams();
-  const session = useSession();
-  const router = useRouter();
-
-  const authUser = session.data?.user;
-  const { messages, error } = useFetchStream<
-    ResponseWithUserDtoEntity<PostResponse>,
-    BaseError
-  >({ path: `/posts/withUser/${id}`, method: "GET", authToken: true });
-
-  console.log(messages);
-
-  const post = messages[0]?.model?.content;
-  const user = messages[0]?.user.content;
+  // const [postState, setPostState] = useState<PostResponse | null>(null);
+  // const { id } = useParams();
+  // const session = useSession();
+  // const router = useRouter();
+  //
+  // const authUser = session.data?.user;
+  // const { messages, error } = useFetchStream<
+  //   ResponseWithUserDtoEntity<PostResponse>,
+  //   BaseError
+  // >({ path: `/posts/withUser/${id}`, method: "GET", authToken: true });
+  //
+  // console.log(messages);
+  //
+  // const post = messages[0]?.model?.content;
+  // const user = messages[0]?.user.content;
+  const {
+    postState,
+    setPostState,
+    messages,
+    error,
+    authUser,
+    post,
+    user,
+    router,
+    session,
+  } = useGetPost();
 
   const react = useCallback(
     async (type: "like" | "dislike") => {
@@ -57,19 +70,19 @@ export default function SinglePost() {
                 ...prev,
                 userLikes: newPost.userLikes,
                 userDislikes: newPost.userDislikes,
-              }
+              },
         );
       } catch (error) {
         console.log(error);
       }
     },
-    [post?.id, session.data?.user?.token]
+    [post?.id, session.data?.user?.token, setPostState],
   );
-  useEffect(() => {
-    if (messages.length > 0) {
-      setPostState(messages[0]?.model?.content);
-    }
-  }, [JSON.stringify(messages)]);
+  // useEffect(() => {
+  //   if (messages.length > 0) {
+  //     setPostState(messages[0]?.model?.content);
+  //   }
+  // }, [JSON.stringify(messages)]);
 
   console.log(error);
 
@@ -85,7 +98,8 @@ export default function SinglePost() {
     );
 
   const isAdmin = authUser.role === "ROLE_ADMIN";
-  const isOwnerOrAdmin = postState?.userId === parseInt(authUser.id) || isAdmin;
+  const isOwner = postState?.userId === parseInt(authUser.id);
+  const isOwnerOrAdmin = isOwner || isAdmin;
 
   if (!post.approved && !isOwnerOrAdmin) {
     notFound();
@@ -136,7 +150,7 @@ export default function SinglePost() {
         <PostComments postId={post.id} />
       </Suspense>
       {isOwnerOrAdmin && (
-        <div className="sticky bottom-3  flex items-center justify-center">
+        <div className="sticky bottom-3  flex items-center justify-center gap-4">
           <AlertDialogDeletePost
             post={post}
             token={session.data?.user?.token}
@@ -146,6 +160,17 @@ export default function SinglePost() {
                 : router.push(`/trainer/user/${authUser.id}/posts`);
             }}
           />
+          {isOwner && (
+            <Button
+              onClick={() => {
+                router.push(
+                  `/trainer/user/${authUser.id}/posts/update/${post.id}`,
+                );
+              }}
+            >
+              Update Post
+            </Button>
+          )}
         </div>
       )}
     </section>

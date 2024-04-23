@@ -25,7 +25,7 @@ export default function CreatePost() {
 
   const tagsOptions: Option[] = useMemo(
     () => post?.tags.map((tag) => ({ label: tag, value: tag })),
-    [post?.tags]
+    [post?.tags],
   );
 
   if (!session?.data?.user) return null;
@@ -55,7 +55,7 @@ export default function CreatePost() {
           path={`/posts/update/${postId}`}
           method="PUT"
           submitText="Update Post"
-          header="Update Post"
+          header={`Update Post: ${post.title}`}
         />
       </Suspense>
     </main>

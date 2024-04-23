@@ -80,17 +80,17 @@ export default function TrainingsForm({
         label: title,
         value: id.toString(),
       })),
-    [JSON.stringify(userExercises)]
+    [JSON.stringify(userExercises)],
   );
 
   const handleSearch = useCallback(
     async (search: string) => {
       console.log(search);
       return exerciseIds.filter(({ label }) =>
-        label.toLowerCase().includes(search.toLowerCase())
+        label.toLowerCase().includes(search.toLowerCase()),
       );
     },
-    [exerciseIds]
+    [exerciseIds],
   );
 
   const onSubmit = useCallback(
@@ -124,7 +124,7 @@ export default function TrainingsForm({
         setIsLoading(false);
       }
     },
-    [authUser?.id, authUser?.token, callback, method, path, redirect, router]
+    [authUser?.id, authUser?.token, callback, method, path, redirect, router],
   );
 
   if (exerciseError?.status) {
@@ -133,7 +133,11 @@ export default function TrainingsForm({
 
   if (!authUser) return null;
 
-  if (isExerciseFinished && exerciseIds.length === 0)
+  console.log("isExerciseFinished", isExerciseFinished);
+  console.log("exerciseIds", exerciseIds.length);
+  console.log("exercises", exercises?.length);
+
+  if (isExerciseFinished && exercises && exercises?.length === 0)
     return (
       <div>
         <Link

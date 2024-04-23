@@ -35,6 +35,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import TrainingsForm from "@/components/forms/trainings-form";
+import { Button } from "@/components/ui/button";
+import { useGetTraining } from "@/app/(main)/(items)/trainings/single/hook";
 
 export default function TrainingPage() {
   const [trainingState, setTrainingState] = useState<TrainingResponse | null>();
@@ -49,49 +51,64 @@ export default function TrainingPage() {
   const exercisesIds = parseAndValidateNumbers(
     searchParams.get("exercises"),
     "Exercises IDs must be a comma-separated list of numbers.",
-    notFound
+    notFound,
   );
 
   console.log(exercisesIds);
 
+  // const {
+  //   messages: exercisesMessages,
+  //   error: exercisesError,
+  //   isFinished: isExerciseFinished,
+  // } = useFetchStream<
+  //   PageableResponse<CustomEntityModel<ExerciseResponse>>,
+  //   BaseError
+  // >({
+  //   path: `/exercises/byIds`,
+  //   method: "PATCH",
+  //   authToken: true,
+  //   body: {
+  //     page: 0,
+  //     size: exercisesIds.length,
+  //   },
+  //   arrayQueryParam: { ids: exercisesIds.map(String) },
+  // });
+  //
+  // const { messages, error, isFinished, refetch } = useFetchStream<
+  //   TrainingResponseWithOrderCount,
+  //   BaseError
+  // >({
+  //   path: `/trainings/withOrderCount/${id}`,
+  //   method: "GET",
+  //   authToken: true,
+  // });
+  //
+  // useEffect(() => {
+  //   if (exercisesMessages.length > 0) {
+  //     setExercisesResponse(exercisesMessages.map((e) => e.content.content));
+  //   }
+  // }, [JSON.stringify(exercisesMessages)]);
+  //
+  // useEffect(() => {
+  //   if (messages.length > 0) {
+  //     setTrainingState(messages[0]);
+  //   }
+  // }, [JSON.stringify(messages)]);
+
   const {
-    messages: exercisesMessages,
-    error: exercisesError,
-    isFinished: isExerciseFinished,
-  } = useFetchStream<
-    PageableResponse<CustomEntityModel<ExerciseResponse>>,
-    BaseError
-  >({
-    path: `/exercises/byIds`,
-    method: "PATCH",
-    authToken: true,
-    body: {
-      page: 0,
-      size: exercisesIds.length,
-    },
-    arrayQueryParam: { ids: exercisesIds.map(String) },
+    messages,
+    error,
+    refetch,
+    isFinished,
+    isExerciseFinished,
+    exercisesError,
+    exercisesMessages,
+  } = useGetTraining({
+    exercisesIds,
+    setExercisesResponse,
+    setTrainingState,
+    id: id instanceof Array ? id[0] : id,
   });
-
-  const { messages, error, isFinished, refetch } = useFetchStream<
-    TrainingResponseWithOrderCount,
-    BaseError
-  >({
-    path: `/trainings/withOrderCount/${id}`,
-    method: "GET",
-    authToken: true,
-  });
-
-  useEffect(() => {
-    if (exercisesMessages.length > 0) {
-      setExercisesResponse(exercisesMessages.map((e) => e.content.content));
-    }
-  }, [JSON.stringify(exercisesMessages)]);
-
-  useEffect(() => {
-    if (messages.length > 0) {
-      setTrainingState(messages[0]);
-    }
-  }, [JSON.stringify(messages)]);
 
   const react = useCallback(
     async (type: "like" | "dislike") => {
@@ -111,13 +128,13 @@ export default function TrainingPage() {
                 ...prev,
                 userLikes: newTraining.userLikes,
                 userDislikes: newTraining.userDislikes,
-              }
+              },
         );
       } catch (error) {
         console.log(error);
       }
     },
-    [trainingState?.id, session.data?.user?.token]
+    [trainingState?.id, session.data?.user?.token],
   );
 
   if (error?.status || exercisesError?.status) {
@@ -150,7 +167,7 @@ export default function TrainingPage() {
 
   const isLiked = trainingState?.userLikes.includes(parseInt(authUser.id));
   const isDisliked = trainingState?.userDislikes.includes(
-    parseInt(authUser.id)
+    parseInt(authUser.id),
   );
   const user = messages[0]?.user;
 
@@ -158,8 +175,8 @@ export default function TrainingPage() {
   return (
     <section className="w-full  min-h-[calc(100vh-4rem)] flex-col items-center justify-center transition-all px-6 py-10 relative pb-14">
       <div
-        className="sticky top-[4rem] z-10 shadow-md p-4 w-[130px] rounded-xl 
-      bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 overflow-hidden 
+        className="sticky top-[4rem] z-10 shadow-md p-4 w-[130px] rounded-xl
+      bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 overflow-hidden
       "
       >
         <div className="flex justify-center items-center w-full gap-2">
@@ -209,7 +226,7 @@ export default function TrainingPage() {
         </div>
       </Link>
       {isOwnerOrAdmin && messages[0].orderCount === 0 && (
-        <div className="sticky bottom-3 my-7 flex items-center justify-center">
+        <div className="sticky bottom-3 my-7 flex items-center justify-center gap-5">
           <AlertDialogDeleteTraining
             training={trainingState}
             token={session.data?.user?.token}
@@ -219,35 +236,48 @@ export default function TrainingPage() {
                 : router.push(`/trainer/user/${authUser.id}/trainings`);
             }}
           />
+          {isOwner && messages[0].orderCount === 0 && exercisesResponse && (
+            <Button
+              onClick={() => {
+                router.push(
+                  `/trainings/single/${id}/update/?exercises=` +
+                    exercisesIds.join(`,`),
+                );
+              }}
+            >
+              Update Training
+            </Button>
+          )}
         </div>
       )}
-      {isOwner && messages[0].orderCount === 0 && exercisesResponse && (
-        <Accordion
-          type="single"
-          collapsible
-          className="w-1/2 mx-auto mt-10 z-50"
-        >
-          <AccordionItem value="item-1">
-            <AccordionTrigger>Update Training</AccordionTrigger>
-            <AccordionContent>
-              <TrainingsForm
-                path={`/trainings/update/${trainingState.id}`}
-                method="PUT"
-                title={trainingState.title}
-                body={trainingState.body}
-                images={trainingState.images}
-                exercises={exercisesResponse.map(({ title, id }) => ({
-                  label: title,
-                  value: id.toString(),
-                }))}
-                price={trainingState.price}
-                submitText="Update Training"
-                callback={refetch}
-              />
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      )}
+      {/*{isOwner && messages[0].orderCount === 0 && exercisesResponse && (*/}
+      {/*  <Accordion*/}
+      {/*    type="single"*/}
+      {/*    collapsible*/}
+      {/*    className="w-1/2 mx-auto mt-10 z-50"*/}
+      {/*  >*/}
+      {/*    <AccordionItem value="item-1">*/}
+      {/*      <AccordionTrigger>Update Training</AccordionTrigger>*/}
+      {/*      <AccordionContent>*/}
+      {/*        <TrainingsForm*/}
+      {/*          path={`/trainings/update/${trainingState.id}`}*/}
+      {/*          method="PUT"*/}
+      {/*          title={trainingState.title}*/}
+      {/*          body={trainingState.body}*/}
+      {/*          images={trainingState.images}*/}
+      {/*          exercises={exercisesResponse.map(({ title, id }) => ({*/}
+      {/*            label: title,*/}
+      {/*            value: id.toString(),*/}
+      {/*          }))}*/}
+      {/*          price={trainingState.price}*/}
+      {/*          submitText="Update Training"*/}
+      {/*          callback={refetch}*/}
+      {/*          header={"Update Training"}*/}
+      {/*        />*/}
+      {/*      </AccordionContent>*/}
+      {/*    </AccordionItem>*/}
+      {/*  </Accordion>*/}
+      {/*)}*/}
       <div className="my-10 mt-24">
         <h1 className="font-bold text-4xl tracking-tight text-center">
           Exercises of the training
