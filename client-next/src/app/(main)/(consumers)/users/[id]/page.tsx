@@ -47,8 +47,8 @@ export default function UserPage({}: UserPageProps) {
       </section>
     );
   return (
-    <section className="w-full min-h-[calc(100vh-4rem)] flex items-center justify-center transition-all">
-      <div className="w-1/2  border rounded-xl px-6 py-8">
+    <section className="w-full min-h-[calc(100vh-4rem)] flex items-center justify-center transition-all mt-4">
+      <div className=" w-full mx-2 md:mx-0 md:w-1/2  border rounded-xl px-6 py-8">
         <div className="flex items-center justify-center gap-4">
           {stateUser?.image && (
             <Avatar>
@@ -79,8 +79,8 @@ export default function UserPage({}: UserPageProps) {
               stateUser?.role === "ROLE_ADMIN"
                 ? "destructive"
                 : stateUser?.role === "ROLE_TRAINER"
-                ? "default"
-                : "secondary"
+                  ? "default"
+                  : "secondary"
             }
             className="text-lg"
           >

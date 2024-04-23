@@ -32,64 +32,79 @@ import { SortDirection } from "@/types/fetch-utils";
 import { makeSortFetchParams } from "@/lib/utils";
 import { ExtraTableProps } from "@/types/tables";
 import { format, parseISO } from "date-fns";
+import { useTable } from "@/hoooks/useTable";
 
 interface Props extends ExtraTableProps {}
 
 export default function ExercisesTable({ path, title, forWhom }: Props) {
   const router = useRouter();
   const session = useSession();
-  const [filter, setFilter] = useState<TableFilter>({
-    key: "title",
-    value: "",
-    placeholder: "Search by title",
-  });
-  const [sort, setSort] = useState<
-    Record<"title" | "id" | "createdAt", SortDirection>
-  >({
-    title: "none",
-    id: "none",
-    createdAt: "none",
-  });
+  // const [filter, setFilter] = useState<TableFilter>({
+  //   key: "title",
+  //   value: "",
+  //   placeholder: "Search by title",
+  // });
+  // const [sort, setSort] = useState<
+  //   Record<"title" | "id" | "createdAt", SortDirection>
+  // >({
+  //   title: "none",
+  //   id: "none",
+  //   createdAt: "none",
+  // });
+  //
+  // const [pageInfo, setPageInfo] = useState<PageInfo>({
+  //   currentPage: 0,
+  //   totalPages: 1,
+  //   totalElements: 10,
+  //   pageSize: 10,
+  // });
+  //
+  // const [data, setData] = useState<ExerciseResponse[]>();
+  // const { messages, error } = useFetchStream<
+  //   PageableResponse<CustomEntityModel<ExerciseResponse>>,
+  //   BaseError
+  // >({
+  //   path,
+  //   method: "PATCH",
+  //   authToken: true,
+  //   body: {
+  //     page: pageInfo.currentPage,
+  //     size: pageInfo.pageSize,
+  //     sortingCriteria: makeSortFetchParams(sort),
+  //   },
+  //   queryParams: { title: filter.value },
+  //   cache: "no-cache",
+  // });
+  //
+  // useEffect(() => {
+  //   if (messages && messages.length > 0 && messages[0].pageInfo) {
+  //     setPageInfo((prev) => ({
+  //       ...prev,
+  //       totalPages: messages[0].pageInfo.totalPages,
+  //       totalElements: messages[0].pageInfo.totalElements,
+  //     }));
+  //   }
+  // }, [JSON.stringify(messages)]);
+  //
+  // useEffect(() => {
+  //   if (messages && messages.length > 0) {
+  //     setData(messages.map(({ content }) => content.content));
+  //   }
+  // }, [JSON.stringify(messages)]);
 
-  const [pageInfo, setPageInfo] = useState<PageInfo>({
-    currentPage: 0,
-    totalPages: 1,
-    totalElements: 10,
-    pageSize: 10,
-  });
-
-  const [data, setData] = useState<ExerciseResponse[]>();
-  const { messages, error } = useFetchStream<
-    PageableResponse<CustomEntityModel<ExerciseResponse>>,
-    BaseError
-  >({
+  const {
+    sort,
+    setSort,
+    data,
+    setData,
+    pageInfo,
+    setPageInfo,
+    filter,
+    setFilter,
+  } = useTable<ExerciseResponse, BaseError>({
+    sortKeys: ["title", "id", "createdAt"],
     path,
-    method: "PATCH",
-    authToken: true,
-    body: {
-      page: pageInfo.currentPage,
-      size: pageInfo.pageSize,
-      sortingCriteria: makeSortFetchParams(sort),
-    },
-    queryParams: { title: filter.value },
-    cache: "no-cache",
   });
-
-  useEffect(() => {
-    if (messages && messages.length > 0 && messages[0].pageInfo) {
-      setPageInfo((prev) => ({
-        ...prev,
-        totalPages: messages[0].pageInfo.totalPages,
-        totalElements: messages[0].pageInfo.totalElements,
-      }));
-    }
-  }, [JSON.stringify(messages)]);
-
-  useEffect(() => {
-    if (messages && messages.length > 0) {
-      setData(messages.map(({ content }) => content.content));
-    }
-  }, [JSON.stringify(messages)]);
 
   const columns: ColumnDef<ExerciseResponse>[] = useMemo(() => {
     let baseColumns: ColumnDef<ExerciseResponse>[] = [
@@ -196,8 +211,8 @@ export default function ExercisesTable({ path, title, forWhom }: Props) {
                               : prev.map((p) =>
                                   p.id === row.original.id
                                     ? { ...p, approved: true }
-                                    : p
-                                )
+                                    : p,
+                                ),
                           );
                         }}
                       />

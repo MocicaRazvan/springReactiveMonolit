@@ -4,6 +4,7 @@ import {
   PageInfo,
   PageableResponse,
   UserDto,
+  ExerciseResponse,
 } from "@/types/dto";
 import { DataTable, Pagination } from "@/components/data-table/data-table";
 import { Suspense, useEffect, useMemo, useState } from "react";
@@ -30,53 +31,71 @@ import { useRouter } from "next/navigation";
 import { makeSortFetchParams } from "@/lib/utils";
 import SortingButton from "@/components/common/sorting-button";
 import Link from "next/link";
+import { useTable } from "@/hoooks/useTable";
 
 export default function Page() {
   const router = useRouter();
-  const [filter, setFilter] = useState<TableFilter>({
-    key: "email",
-    value: "",
-    placeholder: "Search by email",
-  });
   const [role, setRole] = useState<Role | "">("");
-  // params  email:value
-  const [sort, setSort] = useState<
-    Record<"email" | "firstName" | "lastName", SortDirection>
-  >({ email: "none", firstName: "none", lastName: "none" });
-
-  const [pageInfo, setPageInfo] = useState<PageInfo>({
-    currentPage: 0,
-    totalPages: 1,
-    totalElements: 10,
-    pageSize: 10,
-  });
-
-  const { messages, error } = useFetchStream<
-    PageableResponse<CustomEntityModel<UserDto>>,
-    BaseError
-  >({
+  // const [filter, setFilter] = useState<TableFilter>({
+  //   key: "email",
+  //   value: "",
+  //   placeholder: "Search by email",
+  // });
+  // const [role, setRole] = useState<Role | "">("");
+  // // params  email:value
+  // const [sort, setSort] = useState<
+  //   Record<"email" | "firstName" | "lastName", SortDirection>
+  // >({ email: "none", firstName: "none", lastName: "none" });
+  //
+  // const [pageInfo, setPageInfo] = useState<PageInfo>({
+  //   currentPage: 0,
+  //   totalPages: 1,
+  //   totalElements: 10,
+  //   pageSize: 10,
+  // });
+  //
+  // const { messages, error } = useFetchStream<
+  //   PageableResponse<CustomEntityModel<UserDto>>,
+  //   BaseError
+  // >({
+  //   path: "/users",
+  //   method: "PATCH",
+  //   authToken: true,
+  //   body: {
+  //     page: pageInfo.currentPage,
+  //     size: pageInfo.pageSize,
+  //     sortingCriteria: makeSortFetchParams(sort),
+  //   },
+  //   queryParams: { email: filter.value },
+  //   arrayQueryParam: { roles: [role] },
+  // });
+  //
+  // useEffect(() => {
+  //   if (messages && messages.length > 0 && messages[0].pageInfo) {
+  //     setPageInfo((prev) => ({
+  //       ...prev,
+  //       totalPages: messages[0].pageInfo.totalPages,
+  //       totalElements: messages[0].pageInfo.totalElements,
+  //     }));
+  //   }
+  // }, [JSON.stringify(messages)]);
+  const {
+    sort,
+    setSort,
+    data,
+    setData,
+    pageInfo,
+    setPageInfo,
+    filter,
+    setFilter,
+    messages,
+  } = useTable<UserDto, BaseError>({
+    sortKeys: ["email", "firstName", "lastName"],
     path: "/users",
-    method: "PATCH",
-    authToken: true,
-    body: {
-      page: pageInfo.currentPage,
-      size: pageInfo.pageSize,
-      sortingCriteria: makeSortFetchParams(sort),
-    },
-    queryParams: { email: filter.value },
     arrayQueryParam: { roles: [role] },
+    filterKey: "email",
+    filterPlaceholder: "Search by email",
   });
-
-  useEffect(() => {
-    if (messages && messages.length > 0 && messages[0].pageInfo) {
-      setPageInfo((prev) => ({
-        ...prev,
-        totalPages: messages[0].pageInfo.totalPages,
-        totalElements: messages[0].pageInfo.totalElements,
-      }));
-    }
-  }, [JSON.stringify(messages)]);
-
   const columns: ColumnDef<UserDto>[] = useMemo(
     () => [
       {
@@ -109,20 +128,20 @@ export default function Page() {
                 prev === ""
                   ? "ROLE_ADMIN"
                   : prev === "ROLE_ADMIN"
-                  ? "ROLE_TRAINER"
-                  : prev === "ROLE_TRAINER"
-                  ? "ROLE_USER"
-                  : ""
+                    ? "ROLE_TRAINER"
+                    : prev === "ROLE_TRAINER"
+                      ? "ROLE_USER"
+                      : "",
               );
             }}
           >
             {role === ""
               ? "All Roles"
               : role === "ROLE_ADMIN"
-              ? "Admins"
-              : role === "ROLE_TRAINER"
-              ? "Trainers"
-              : "Users"}
+                ? "Admins"
+                : role === "ROLE_TRAINER"
+                  ? "Trainers"
+                  : "Users"}
           </Button>
         ),
         cell: ({ row }) => (
@@ -131,8 +150,8 @@ export default function Page() {
               row.getValue("role") === "ROLE_ADMIN"
                 ? "destructive"
                 : row.getValue("role") === "ROLE_TRAINER"
-                ? "default"
-                : "secondary"
+                  ? "default"
+                  : "secondary"
             }
           >
             {row.getValue("role")}
@@ -214,14 +233,14 @@ export default function Page() {
         },
       },
     ],
-    [router, sort, role]
+    [sort, setSort, role, router],
   );
-  const data = useMemo(
-    () => messages.map(({ content }) => content.content),
-    [messages]
-  );
+  // const data = useMemo(
+  //   () => messages.map(({ content }) => content.content),
+  //   [messages],
+  // );
 
-  if (!messages) return null;
+  if (!messages || !data) return null;
   return (
     <div className="px-6 pb-10">
       <h1 className="text-4xl tracking-tighter font-bold text-center mt-8">

@@ -18,6 +18,7 @@ import {
   PageableResponse,
   PostResponse,
   TrainingResponse,
+  ExerciseResponse,
 } from "@/types/dto";
 import { BaseError } from "@/types/responses";
 import { ColumnDef } from "@tanstack/react-table";
@@ -33,6 +34,8 @@ import { makeSortFetchParams } from "@/lib/utils";
 import AlertDialogApproveTraining from "@/components/dialogs/trainings/approve-training";
 import { ExtraTableProps } from "@/types/tables";
 import { format, parseISO } from "date-fns";
+import { useTable } from "@/hoooks/useTable";
+
 interface Props extends ExtraTableProps {}
 
 export default function TrainingsTable({ path, title, forWhom }: Props) {
@@ -40,57 +43,71 @@ export default function TrainingsTable({ path, title, forWhom }: Props) {
   const session = useSession();
   const isAdmin = session?.data?.user?.role === "ROLE_ADMIN";
 
-  const [filter, setFilter] = useState<TableFilter>({
-    key: "title",
-    value: "",
-    placeholder: "Search by title",
-  });
-  const [sort, setSort] = useState<
-    Record<"title" | "id" | "createdAt", SortDirection>
-  >({
-    title: "none",
-    id: "none",
-    createdAt: "none",
-  });
-  const [pageInfo, setPageInfo] = useState<PageInfo>({
-    currentPage: 0,
-    totalPages: 1,
-    totalElements: 10,
-    pageSize: 10,
-  });
+  // const [filter, setFilter] = useState<TableFilter>({
+  //   key: "title",
+  //   value: "",
+  //   placeholder: "Search by title",
+  // });
+  // const [sort, setSort] = useState<
+  //   Record<"title" | "id" | "createdAt", SortDirection>
+  // >({
+  //   title: "none",
+  //   id: "none",
+  //   createdAt: "none",
+  // });
+  // const [pageInfo, setPageInfo] = useState<PageInfo>({
+  //   currentPage: 0,
+  //   totalPages: 1,
+  //   totalElements: 10,
+  //   pageSize: 10,
+  // });
+  //
+  // const [data, setData] = useState<TrainingResponse[]>();
+  // const { messages, error } = useFetchStream<
+  //   PageableResponse<CustomEntityModel<TrainingResponse>>,
+  //   BaseError
+  // >({
+  //   path,
+  //   method: "PATCH",
+  //   authToken: true,
+  //   body: {
+  //     page: pageInfo.currentPage,
+  //     size: pageInfo.pageSize,
+  //     sortingCriteria: makeSortFetchParams(sort),
+  //   },
+  //   queryParams: { title: filter.value },
+  //   cache: "no-cache",
+  // });
+  //
+  // useEffect(() => {
+  //   if (messages && messages.length > 0 && messages[0].pageInfo) {
+  //     setPageInfo((prev) => ({
+  //       ...prev,
+  //       totalPages: messages[0].pageInfo.totalPages,
+  //       totalElements: messages[0].pageInfo.totalElements,
+  //     }));
+  //   }
+  // }, [JSON.stringify(messages)]);
+  //
+  // useEffect(() => {
+  //   if (messages && messages.length > 0) {
+  //     setData(messages.map(({ content }) => content.content));
+  //   }
+  // }, [JSON.stringify(messages)]);
 
-  const [data, setData] = useState<TrainingResponse[]>();
-  const { messages, error } = useFetchStream<
-    PageableResponse<CustomEntityModel<TrainingResponse>>,
-    BaseError
-  >({
+  const {
+    sort,
+    setSort,
+    data,
+    setData,
+    pageInfo,
+    setPageInfo,
+    filter,
+    setFilter,
+  } = useTable<TrainingResponse, BaseError>({
+    sortKeys: ["title", "id", "createdAt"],
     path,
-    method: "PATCH",
-    authToken: true,
-    body: {
-      page: pageInfo.currentPage,
-      size: pageInfo.pageSize,
-      sortingCriteria: makeSortFetchParams(sort),
-    },
-    queryParams: { title: filter.value },
-    cache: "no-cache",
   });
-
-  useEffect(() => {
-    if (messages && messages.length > 0 && messages[0].pageInfo) {
-      setPageInfo((prev) => ({
-        ...prev,
-        totalPages: messages[0].pageInfo.totalPages,
-        totalElements: messages[0].pageInfo.totalElements,
-      }));
-    }
-  }, [JSON.stringify(messages)]);
-
-  useEffect(() => {
-    if (messages && messages.length > 0) {
-      setData(messages.map(({ content }) => content.content));
-    }
-  }, [JSON.stringify(messages)]);
 
   const columns: ColumnDef<TrainingResponse>[] = useMemo(() => {
     let baseColumns: ColumnDef<TrainingResponse>[] = [
@@ -171,7 +188,7 @@ export default function TrainingsTable({ path, title, forWhom }: Props) {
                   onClick={() =>
                     router.push(
                       `/trainings/single/${row.original.id}?exercises=` +
-                        row.original.exercises.join(`,`)
+                        row.original.exercises.join(`,`),
                     )
                   }
                 >
@@ -206,8 +223,8 @@ export default function TrainingsTable({ path, title, forWhom }: Props) {
                               : prev.map((p) =>
                                   p.id === row.original.id
                                     ? { ...p, approved: true }
-                                    : p
-                                )
+                                    : p,
+                                ),
                           );
                         }}
                       />

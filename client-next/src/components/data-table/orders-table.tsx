@@ -17,6 +17,7 @@ import {
   OrderResponse,
   PageInfo,
   PageableResponse,
+  ExerciseResponse,
 } from "@/types/dto";
 import { BaseError } from "@/types/responses";
 import { ColumnDef } from "@tanstack/react-table";
@@ -30,6 +31,7 @@ import { SortDirection } from "@/types/fetch-utils";
 import { makeSortFetchParams } from "@/lib/utils";
 import { ExtraTableProps } from "@/types/tables";
 import { parseISO, format } from "date-fns";
+import { useTable } from "@/hoooks/useTable";
 
 interface Props extends ExtraTableProps {}
 
@@ -38,51 +40,65 @@ export default function OrdersTable({ path, title, forWhom }: Props) {
   const session = useSession();
   const isAdmin = session?.data?.user?.role === "ROLE_ADMIN";
 
-  const [sort, setSort] = useState<Record<"id" | "createdAt", SortDirection>>({
-    id: "none",
-    createdAt: "none",
-  });
+  // const [sort, setSort] = useState<Record<"id" | "createdAt", SortDirection>>({
+  //   id: "none",
+  //   createdAt: "none",
+  // });
+  //
+  // const [pageInfo, setPageInfo] = useState<PageInfo>({
+  //   currentPage: 0,
+  //   totalPages: 1,
+  //   totalElements: 10,
+  //   pageSize: 10,
+  // });
+  // const [data, setData] = useState<OrderResponse[]>();
+  //
+  // const { messages, error } = useFetchStream<
+  //   PageableResponse<CustomEntityModel<OrderResponse>>,
+  //   BaseError
+  // >({
+  //   path,
+  //   method: "PATCH",
+  //   authToken: true,
+  //   body: {
+  //     page: pageInfo.currentPage,
+  //     size: pageInfo.pageSize,
+  //     sortingCriteria: makeSortFetchParams(sort),
+  //   },
+  //   cache: "no-cache",
+  // });
+  //
+  // useEffect(() => {
+  //   if (messages && messages.length > 0 && messages[0].pageInfo) {
+  //     setPageInfo((prev) => ({
+  //       ...prev,
+  //       totalPages: messages[0].pageInfo.totalPages,
+  //       totalElements: messages[0].pageInfo.totalElements,
+  //     }));
+  //   }
+  // }, [JSON.stringify(messages)]);
+  //
+  // useEffect(() => {
+  //   if (messages && messages.length > 0) {
+  //     setData(messages.map(({ content }) => content.content));
+  //   }
+  // }, [JSON.stringify(messages)]);
+  //
+  // console.log(data);
 
-  const [pageInfo, setPageInfo] = useState<PageInfo>({
-    currentPage: 0,
-    totalPages: 1,
-    totalElements: 10,
-    pageSize: 10,
-  });
-  const [data, setData] = useState<OrderResponse[]>();
-
-  const { messages, error } = useFetchStream<
-    PageableResponse<CustomEntityModel<OrderResponse>>,
-    BaseError
-  >({
+  const {
+    sort,
+    setSort,
+    data,
+    setData,
+    pageInfo,
+    setPageInfo,
+    filter,
+    setFilter,
+  } = useTable<OrderResponse, BaseError>({
+    sortKeys: ["id", "createdAt"],
     path,
-    method: "PATCH",
-    authToken: true,
-    body: {
-      page: pageInfo.currentPage,
-      size: pageInfo.pageSize,
-      sortingCriteria: makeSortFetchParams(sort),
-    },
-    cache: "no-cache",
   });
-
-  useEffect(() => {
-    if (messages && messages.length > 0 && messages[0].pageInfo) {
-      setPageInfo((prev) => ({
-        ...prev,
-        totalPages: messages[0].pageInfo.totalPages,
-        totalElements: messages[0].pageInfo.totalElements,
-      }));
-    }
-  }, [JSON.stringify(messages)]);
-
-  useEffect(() => {
-    if (messages && messages.length > 0) {
-      setData(messages.map(({ content }) => content.content));
-    }
-  }, [JSON.stringify(messages)]);
-
-  console.log(data);
 
   const columns: ColumnDef<OrderResponse>[] = useMemo(() => {
     let baseColumns: ColumnDef<OrderResponse>[] = [
@@ -103,12 +119,12 @@ export default function OrdersTable({ path, title, forWhom }: Props) {
       },
       {
         accessorKey: "trainings",
-        header: () => <div className="text-left">#UserLikes</div>,
+        header: () => <div className="text-left">Trainings Number</div>,
         cell: ({ row }) => <p>{row.original.trainings.length}</p>,
       },
       {
         accessorKey: "shippingAddress",
-        header: () => <div className="text-left">#BillingAddress</div>,
+        header: () => <div className="text-left">BillingAddress</div>,
         cell: ({ row }) => <p>{row.original.shippingAddress}</p>,
       },
       {

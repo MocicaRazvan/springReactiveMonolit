@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import SheetNav from "./sheet-nav";
 import { authOptions } from "../api/auth/[...nextauth]/auth-options";
+import { AdminNav } from "@/app/admin/admin-nav";
 
 export default async function AuthLayout({
   children,
@@ -17,7 +18,7 @@ export default async function AuthLayout({
   }
   return (
     <div>
-      <SheetNav />
+      <AdminNav />
       {children}
     </div>
   );

@@ -44,10 +44,10 @@ export function isDeepEqual<T>(obj1: T, obj2: T): boolean {
 }
 
 export function makeSortFetchParams(
-  sort: Record<string | number | symbol, string>
+  sort: Record<string | number | symbol, string>,
 ) {
   return Object.fromEntries(
-    Object.entries(sort).filter(([_, value]) => value !== "none")
+    Object.entries(sort).filter(([_, value]) => value !== "none"),
   );
 }
 
@@ -56,27 +56,31 @@ export function makeSortString(sort: Record<string | number | symbol, string>) {
     .map(([key, value]) => `${key}:${value}`)
     .join(",");
 }
+
 export function parseSortString<T extends string>(
   sortStr: string,
-  validKeys: T[]
+  validKeys: T[],
 ): Record<T, SortDirection> {
   return sortStr
     .split(",")
     .map((part) => part.split(":") as [T, SortDirection])
     .filter(
       ([key, value]) =>
-        validKeys.includes(key) && sortDirections.includes(value)
+        validKeys.includes(key) && sortDirections.includes(value),
     )
-    .reduce<Record<T, SortDirection>>((acc, [key, value]) => {
-      acc[key] = value;
-      return acc;
-    }, {} as Record<T, SortDirection>);
+    .reduce<Record<T, SortDirection>>(
+      (acc, [key, value]) => {
+        acc[key] = value;
+        return acc;
+      },
+      {} as Record<T, SortDirection>,
+    );
 }
 
 export function parseAndValidateNumbers(
   input: string | null,
   errorMessage: string,
-  callback: () => never
+  callback: () => never,
 ): number[] {
   if (!input) {
     callback();
@@ -87,3 +91,11 @@ export function parseAndValidateNumbers(
     return number;
   });
 }
+
+export const parseQueryParamAsInt = (
+  paramValue: string | null,
+  defaultValue: number,
+): number => {
+  const parsedValue = parseInt(paramValue || "", 10);
+  return isNaN(parsedValue) ? defaultValue : parsedValue;
+};

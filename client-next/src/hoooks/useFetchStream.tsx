@@ -4,7 +4,7 @@ import ndjsonStream from "can-ndjson-stream";
 import { BaseError } from "@/types/responses";
 import { fetchStream, FetchStreamProps } from "./fetchStream";
 
-interface UseFetchStreamProps<T, E> {
+export interface UseFetchStreamProps<T, E> {
   path: string;
   method?: "GET" | "POST" | "PUT" | "DELETE" | "HEAD" | "PATCH";
   body?: object | null;
