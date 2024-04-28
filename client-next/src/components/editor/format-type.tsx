@@ -53,7 +53,7 @@ export function FormatType({ editor }: FormatTypeProps) {
 
   return (
     <Select onValueChange={onChange} defaultValue={value()} value={value()}>
-      <SelectTrigger className="h-8 w-[120px] invisible sm:visible">
+      <SelectTrigger className="h-8 w-[120px] visible">
         <SelectValue placeholder="Select format" />
       </SelectTrigger>
       <SelectContent>

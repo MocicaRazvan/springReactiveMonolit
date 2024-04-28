@@ -99,3 +99,10 @@ export const parseQueryParamAsInt = (
   const parsedValue = parseInt(paramValue || "", 10);
   return isNaN(parsedValue) ? defaultValue : parsedValue;
 };
+
+export function getCSSVariableValue(variableName: string) {
+  const style = getComputedStyle(document.documentElement);
+  const isDarkMode = document.documentElement.classList.contains("dark");
+  const modePrefix = isDarkMode ? "dark-" : "";
+  return style.getPropertyValue(`--${modePrefix}${variableName}`).trim();
+}

@@ -5,18 +5,21 @@ import { CustomEntityModel, OrderResponse } from "@/types/dto";
 import { Session } from "next-auth";
 import { notFound } from "next/navigation";
 import { Suspense, useMemo } from "react";
-import OrderConten from "./order-content";
+import OrderContent from "./order-content";
 import Loader from "@/components/ui/spinner";
 
 export interface OrderContentWrapperProps {
   authUser: NonNullable<Session["user"]>;
   orderId: string;
 }
+
 export default function OrderContentWrapper({
   authUser,
   orderId,
 }: OrderContentWrapperProps) {
-  const { messages, error,refetch} = useFetchStream<CustomEntityModel<OrderResponse>>({
+  const { messages, error, refetch } = useFetchStream<
+    CustomEntityModel<OrderResponse>
+  >({
     path: `/orders/${orderId}`,
     method: "GET",
     authToken: true,
@@ -24,11 +27,11 @@ export default function OrderContentWrapper({
 
   const isAdmin = useMemo(
     () => authUser.role === "ROLE_ADMIN",
-    [authUser.role]
+    [authUser.role],
   );
   const isOwner = useMemo(
     () => messages[0]?.content?.userId === parseInt(authUser.id),
-    [messages, authUser.id]
+    [messages, authUser.id],
   );
   const orderResponse = useMemo(() => messages[0]?.content, [messages]);
 
@@ -46,7 +49,7 @@ export default function OrderContentWrapper({
         </section>
       }
     >
-      <OrderConten
+      <OrderContent
         orderId={orderId}
         isAdmin={isAdmin}
         isOwner={isOwner}

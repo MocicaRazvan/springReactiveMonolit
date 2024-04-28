@@ -24,10 +24,10 @@ interface EditorToolbarProps {
   sticky?: boolean;
 }
 
-const EditorToolbar = ({ editor,sticky }: EditorToolbarProps) => {
+const EditorToolbar = ({ editor, sticky }: EditorToolbarProps) => {
   return (
     <Toolbar
-      className="m-0 flex items-center justify-between p-2"
+      className="m-0 flex items-center md:justify-between p-2 md:flex-row flex-col justify-center overflow-x-auto"
       aria-label="Formatting options"
       sticky={sticky}
     >
@@ -123,10 +123,15 @@ const EditorToolbar = ({ editor,sticky }: EditorToolbarProps) => {
           <Minus className="h-4 w-4" />
         </Toggle>
 
-        <FormatType editor={editor} />
+        <div className="hidden md:block">
+          <FormatType editor={editor} />
+        </div>
       </ToggleGroup>
 
       <ToggleGroup className="flex flex-row items-center" type="multiple">
+        <div className="block md:hidden">
+          <FormatType editor={editor} />
+        </div>
         <Toggle
           size="icon"
           className="mr-1"

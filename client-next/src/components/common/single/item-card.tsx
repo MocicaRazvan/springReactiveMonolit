@@ -27,7 +27,7 @@ export default function ItemCard<T extends TitleBodyUser>({
   return (
     <div
       className={cn(
-        "flex flex-col items-start gap-2 border rounded-xl p-4 w-full  hover:shadow-lg transition-all duration-300 shadow-foreground hover:shadow-foreground hover:scale-[1.025]",
+        "flex flex-col items-start gap-2 border rounded-xl p-4 w-full  hover:shadow-lg transition-all duration-300 shadow-foreground hover:shadow-foreground/40 hover:scale-[1.025]",
       )}
     >
       <Image
