@@ -45,7 +45,6 @@ export default function OrderContent({
   refetch,
 }: OrderContentProps) {
   console.log(orderResponse);
-  const { width, height } = useWindowSize();
   const [showConfetti, setShowConfetti] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
