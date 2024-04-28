@@ -33,7 +33,7 @@ public class TrainingServiceImpl extends ApprovedServiceImpl<Training, TrainingB
     private final ExerciseService exerciseService;
 
     public TrainingServiceImpl(TrainingRepository modelRepository, TrainingMapper modelMapper, PageableUtilsCustom pageableUtils, UserUtils userUtils, UserRepository userRepository, UserMapper userMapper, EntitiesUtils entitiesUtils, ExerciseService exerciseService) {
-        super(modelRepository, modelMapper, pageableUtils, userUtils, userRepository, userMapper, "training", List.of("id", "userId", "title", "createdAt"), entitiesUtils);
+        super(modelRepository, modelMapper, pageableUtils, userUtils, userRepository, userMapper, "training", List.of("id", "userId", "title", "createdAt", "price"), entitiesUtils);
         this.exerciseService = exerciseService;
     }
 

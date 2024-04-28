@@ -52,9 +52,15 @@ export default function TrainingsList({ userId }: Props) {
         )}
       </div>
     ),
-    [isInCartForUser, addToCartForUser, toast, removeFromCartForUser, router]
+    [isInCartForUser, addToCartForUser, toast, removeFromCartForUser, router],
   );
 
+  const extraHeader = useCallback(
+    (item: TrainingResponse) => (
+      <span className="font-bold">Price ${item.price}</span>
+    ),
+    [],
+  );
   return (
     <GridList<TrainingResponse>
       onItemClick={({ id, exercises }) => {
@@ -62,8 +68,9 @@ export default function TrainingsList({ userId }: Props) {
       }}
       sizeOptions={[6, 12, 18]}
       path="/trainings/approved"
-      sortingOptions={["title", "createdAt"]}
+      sortingOptions={["title", "createdAt", "price"]}
       passExtraContent={extraContent}
+      passExtraHeader={extraHeader}
     />
   );
 }

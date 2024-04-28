@@ -5,12 +5,13 @@ import { Session } from "next-auth";
 import { MenubarItem, MenubarSeparator } from "@/components/ui/menubar";
 import Link from "next/link";
 import { Fragment, memo, useCallback, useMemo } from "react";
-import { isDeepEqual } from "@/lib/utils";
+import { cn, isDeepEqual } from "@/lib/utils";
 import { LinkNav, shouldRenderLink } from "@/components/nav/links";
 import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { usePathname } from "next/navigation";
 
 interface MenuBarItemsNavProps {
   links: LinkNav[];
@@ -20,6 +21,8 @@ interface MenuBarItemsNavProps {
 
 const MenuBarItemsNav = memo<MenuBarItemsNavProps>(
   ({ links, authUser, isDropdown = false }) => {
+    const path = usePathname();
+
     const shouldRenderNavLink = useCallback(
       (linkRole: Role) => shouldRenderLink(authUser, linkRole),
       [authUser],
@@ -37,10 +40,16 @@ const MenuBarItemsNav = memo<MenuBarItemsNavProps>(
     return (
       <>
         {links.map(({ text, href, role }, i) => {
+          const active = path.includes(href);
           return (
             shouldRenderNavLink(role) && (
               <Fragment key={href}>
-                <Item className="flex items-center justify-center">
+                <Item
+                  className={cn(
+                    "flex items-center justify-center cursor-pointer",
+                    active && "bg-accent",
+                  )}
+                >
                   <Link href={href} className={"text-start w-full"}>
                     {text}
                   </Link>

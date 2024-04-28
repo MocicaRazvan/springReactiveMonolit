@@ -36,6 +36,7 @@ interface GridListProps<T extends TitleBodyUser> {
   sizeOptions?: number[];
   path: string;
   passExtraContent?: (item: T) => ReactNode;
+  passExtraHeader?: (item: T) => ReactNode;
 }
 
 export default function GridList<T extends TitleBodyUser>({
@@ -44,6 +45,7 @@ export default function GridList<T extends TitleBodyUser>({
   sortingOptions,
   path,
   passExtraContent,
+  passExtraHeader,
 }: GridListProps<T>) {
   const pathname = usePathname();
   const router = useRouter();
@@ -51,13 +53,13 @@ export default function GridList<T extends TitleBodyUser>({
   const titleFilter = currentSearchParams.get("title") || "";
   const currentPage = parseInt(
     currentSearchParams.get("currentPage") || "0",
-    10
+    10,
   );
   const pageSize = parseInt(currentSearchParams.get("pageSize") || "6", 10);
 
   const sortString = currentSearchParams.get("sort");
   const sortQ = sortString
-    ? parseSortString(sortString, ["title", "createdAt"])
+    ? parseSortString(sortString, sortingOptions)
     : ({ title: "none", createdAt: "none" } as Record<
         "title" | "createdAt",
         SortDirection
@@ -87,7 +89,7 @@ export default function GridList<T extends TitleBodyUser>({
 
   const [sort, setSort] =
     useState<Record<(typeof sortingOptions)[number], SortDirection>>(
-      initialSort
+      initialSort,
     );
 
   const [pageInfo, setPageInfo] = useState<PageInfo>({
@@ -104,7 +106,7 @@ export default function GridList<T extends TitleBodyUser>({
 
   const items = useMemo(
     () => messages?.map((m) => m.content.content) || [],
-    [JSON.stringify(messages)]
+    [JSON.stringify(messages)],
   );
 
   useEffect(() => {
@@ -119,7 +121,7 @@ export default function GridList<T extends TitleBodyUser>({
 
   useEffect(() => {
     const updatedSearchParams = new URLSearchParams(
-      currentSearchParams.toString()
+      currentSearchParams.toString(),
     );
     updatedSearchParams.set("title", debouncedFilter.title);
     updatedSearchParams.set("currentPage", pageInfo.currentPage.toString());
@@ -139,6 +141,13 @@ export default function GridList<T extends TitleBodyUser>({
     currentSearchParams,
     sort,
   ]);
+
+  useEffect(() => {
+    setPageInfo((prev) => ({
+      ...prev,
+      currentPage: 0,
+    }));
+  }, [JSON.stringify(sort), JSON.stringify(debouncedFilter)]);
 
   console.log(isFinished);
 
@@ -181,6 +190,7 @@ export default function GridList<T extends TitleBodyUser>({
                 item={item}
                 onClick={() => onItemClick(item)}
                 generateExtraContent={passExtraContent}
+                generateExtraHeader={passExtraHeader}
               />
             </div>
           ))}

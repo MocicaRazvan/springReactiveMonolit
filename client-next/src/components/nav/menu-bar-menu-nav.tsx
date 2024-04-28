@@ -35,7 +35,7 @@ const MenuBarMenuNav = memo(
     return (
       <Menubar>
         <MenubarMenu>
-          <MenubarTrigger>{title}</MenubarTrigger>
+          <MenubarTrigger className="cursor-pointer">{title}</MenubarTrigger>
           <MenubarContent>
             <MenuBarItemsNav
               links={links}

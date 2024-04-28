@@ -135,7 +135,7 @@ export function useTable<DataType, E extends BaseError>({
       ...prev,
       currentPage: 0,
     }));
-  }, [filter.value]);
+  }, [filter.value, JSON.stringify(sort)]);
 
   useEffect(() => {
     const updatedSearchParams = new URLSearchParams(
