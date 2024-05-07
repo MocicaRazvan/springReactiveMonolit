@@ -88,7 +88,7 @@ class TrainingServiceImplTest {
 
     private final String modelName = "training";
 
-    private final List<String> allowedSortingFields = List.of("id", "userId", "title", "createdAt");
+    private final List<String> allowedSortingFields = List.of("id", "userId", "title", "createdAt", "price");
 
     UserCustom user = UserCustom.builder()
             .id(1L)

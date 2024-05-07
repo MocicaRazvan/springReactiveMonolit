@@ -7,7 +7,7 @@ RUN mvn dependency:go-offline -B
 
 COPY src ./src
 
-RUN mvn package -DskipTests -Dmaven.test.skip=true
+RUN mvn package -DskipTests
 
 ENTRYPOINT ["sh", "-c", "java -Djava.security.egd=file:/dev/./urandom -jar /app/target/Wellness-0.0.1-SNAPSHOT.jar"]
 
