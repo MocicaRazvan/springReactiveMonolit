@@ -58,7 +58,7 @@ const BurgerNav = memo<Props>(
           className="w-[75%] z-[100] min-h-[100vh] "
           closeClassNames="h-8 w-8"
         >
-          <ScrollArea className="pt-4 px-4  h-full min-h-[100vh] flex flex-col gap-6 ">
+          <ScrollArea className="pt-4 px-4  h-full min-h-[100vh] flex flex-col gap-6">
             <div className="mb-8">
               <Link
                 href="/"
@@ -70,12 +70,14 @@ const BurgerNav = memo<Props>(
               </Link>
             </div>
             {isUser && (
-              <Link
-                href="/posts/approved"
-                className="font-bold hover:underline"
-              >
-                Posts
-              </Link>
+              <div>
+                <Link
+                  href="/posts/approved"
+                  className="font-bold hover:underline text-lg"
+                >
+                  Posts
+                </Link>
+              </div>
             )}
             <AccordionBarMenuNav
               title={"Posts"}
@@ -92,12 +94,14 @@ const BurgerNav = memo<Props>(
               setSheetOpen={setSheetOpen}
             />
             {isUser && (
-              <Link
-                href="/trainings/approved"
-                className="font-bold hover:underline"
-              >
-                Trainings
-              </Link>
+              <div className="mt-4">
+                <Link
+                  href="/trainings/approved"
+                  className="font-bold hover:underline text-lg"
+                >
+                  Trainings
+                </Link>
+              </div>
             )}
             <AccordionBarMenuNav
               title={"Trainings"}
@@ -107,12 +111,14 @@ const BurgerNav = memo<Props>(
               setSheetOpen={setSheetOpen}
             />
             {!isAdmin && (
-              <Link
-                href={`/users/${authUser?.id}/orders`}
-                className="font-bold hover:underline"
-              >
-                Your Orders
-              </Link>
+              <div className="mt-4">
+                <Link
+                  href={`/users/${authUser?.id}/orders`}
+                  className="font-bold hover:underline text-lg"
+                >
+                  Your Orders
+                </Link>
+              </div>
             )}
             <AccordionBarMenuNav
               title={"Orders"}
@@ -124,7 +130,7 @@ const BurgerNav = memo<Props>(
             {authUser && (
               <Link
                 href={`/users/${authUser?.id}`}
-                className="text-lg hover:underline font-bold block mt-8"
+                className="text-lg hover:underline font-bold block mt-12"
               >
                 <SheetClose className="flex items-center justify-start gap-2 h-full w-full">
                   <p> Your Profile</p>

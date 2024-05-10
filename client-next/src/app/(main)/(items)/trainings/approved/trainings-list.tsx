@@ -57,7 +57,7 @@ export default function TrainingsList({ userId }: Props) {
 
   const extraHeader = useCallback(
     (item: TrainingResponse) => (
-      <span className="font-bold">Price ${item.price}</span>
+      <span className="font-bold">${item.price}</span>
     ),
     [],
   );

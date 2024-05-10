@@ -23,10 +23,9 @@ import CustomVideoCarousel from "@/components/common/custom-video-crousel";
 import { fetchStream } from "@/hoooks/fetchStream";
 import LikesDislikes from "@/components/common/single/likes-dislikes";
 import Link from "next/link";
-import { AvatarImage } from "@/components/ui/avatar";
+import { AvatarImage, Avatar } from "@/components/ui/avatar";
 import TrainingExercises from "./training-exercises";
 import CustomImageCarousel from "@/components/common/custom-image-crousel";
-import { Avatar } from "@radix-ui/react-avatar";
 import AlertDialogDeleteTraining from "@/components/dialogs/trainings/delete-training";
 import {
   Accordion,

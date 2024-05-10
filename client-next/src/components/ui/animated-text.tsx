@@ -3,9 +3,10 @@
 //https://www.frontend.fyi/v/staggered-text-animations-with-framer-motion
 
 import { motion, useAnimation, useInView, Variant } from "framer-motion";
-import { useEffect, useRef } from "react";
+import { ReactElement, useEffect, useRef } from "react";
+
 type AnimatedTextProps = {
-  text: string | string[];
+  text: string | string[] | ReactElement;
   className?: string;
   once?: boolean;
   repeatDelay?: number;
@@ -15,6 +16,7 @@ type AnimatedTextProps = {
   };
   split?: boolean;
   amount?: number;
+  ReactElement?: boolean;
 };
 
 const defaultAnimations = {
@@ -39,6 +41,7 @@ export const AnimatedText = ({
   animation = defaultAnimations,
   split = true,
   amount = 0.5,
+  ReactElement,
 }: AnimatedTextProps) => {
   const controls = useAnimation();
   const textArray = Array.isArray(text) ? text : [text];
@@ -66,14 +69,27 @@ export const AnimatedText = ({
     return () => clearTimeout(timeout);
   }, [isInView]);
 
+  console.log("textArray", textArray);
+
   const renderText = () => {
+    if (
+      textArray.length === 1 &&
+      textArray[0] instanceof Object &&
+      "type" in textArray[0]
+    ) {
+      return (
+        <motion.span variants={animation} className="block">
+          {textArray[0]}
+        </motion.span>
+      );
+    }
     if (!split) {
       return (
         <motion.span variants={animation}>{textArray.join(" ")}</motion.span>
       );
     }
 
-    return textArray.map((line, lineIndex) => (
+    return (textArray as string[]).map((line, lineIndex) => (
       <span className="block" key={`${line}-${lineIndex}`}>
         {line.split(" ").map((word, wordIndex) => (
           <span className="inline-block" key={`${word}-${wordIndex}`}>

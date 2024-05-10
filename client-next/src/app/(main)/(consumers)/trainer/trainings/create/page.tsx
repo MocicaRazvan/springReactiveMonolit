@@ -7,7 +7,7 @@ import { Suspense } from "react";
 export default async function CreateTraining() {
   const session = await getServerSession(authOptions);
 
-  if (!session) return null;
+  if (!session?.user) return null;
 
   return (
     <main className="flex items-center justify-center px-6 py-10">
@@ -19,6 +19,7 @@ export default async function CreateTraining() {
           callback={async () => {
             "use server";
           }}
+          authUser={session.user}
         />
       </Suspense>
     </main>

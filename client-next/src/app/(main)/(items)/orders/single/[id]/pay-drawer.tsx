@@ -37,6 +37,7 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
+import { roundToDecimalPlaces } from "@/lib/utils";
 
 interface Props {
   totalPrice: number;
@@ -56,18 +57,24 @@ export default function PayDrawer({
   const [isLoading, setIsLoading] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const form = useForm<ConfirmPriceType>({
-    resolver: zodResolver(createConfirmPriceSchema(totalPrice)),
+    resolver: zodResolver(
+      createConfirmPriceSchema(roundToDecimalPlaces(totalPrice, 2)),
+    ),
     defaultValues: {
       userConfirmedPrice: 0,
     },
   });
-
 
   const onSubmit = useCallback(
     async ({ userConfirmedPrice }: ConfirmPriceType) => {
       setIsLoading(true);
 
       try {
+        if (userConfirmedPrice !== roundToDecimalPlaces(totalPrice, 2)) {
+          setErrorMsg("Please confirm the price of your order.");
+          setIsLoading(false);
+          return;
+        }
         const { messages, error } = await fetchStream<
           CustomEntityModel<OrderResponse>
         >({
@@ -92,7 +99,7 @@ export default function PayDrawer({
         setIsLoading(false);
       }
     },
-    [callback, token, orderId]
+    [callback, token, orderId],
   );
 
   return (
@@ -123,7 +130,9 @@ export default function PayDrawer({
                   <FormItem>
                     <FormLabel>
                       Confirm Price:
-                      <span className=" ml-2 font-bold">{totalPrice}</span>
+                      <span className=" ml-2 font-bold">
+                        {roundToDecimalPlaces(totalPrice, 2)}
+                      </span>
                     </FormLabel>
                     <FormControl>
                       <Input placeholder="0" {...field} type="number" />

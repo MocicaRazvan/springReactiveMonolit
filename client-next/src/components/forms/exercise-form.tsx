@@ -27,6 +27,8 @@ import { Button } from "../ui/button";
 import { Loader2 } from "lucide-react";
 import { CustomEntityModel, ExerciseResponse } from "@/types/dto";
 import { fetchStream } from "@/hoooks/fetchStream";
+import { toast } from "@/components/ui/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 
 interface Props extends Partial<ExerciseType>, BasicFormProps {}
 
@@ -84,6 +86,29 @@ export default function ExerciseForm({
           if (callback) {
             callback();
           }
+          const toastAction = (
+            <ToastAction
+              altText="See"
+              onClick={() =>
+                router.push(`/exercises/single/${messages[0].content.id}`)
+              }
+            >
+              See Exercise
+            </ToastAction>
+          );
+          title
+            ? toast({
+                title: values.title,
+                description: "Exercise updated successfully",
+                variant: "success",
+                action: toastAction,
+              })
+            : toast({
+                title: values.title,
+                description: "Exercise created successfully",
+                variant: "success",
+                action: toastAction,
+              });
           router.push(`/exercises/single/${messages[0].content.id}`);
         }
       } catch (error) {
@@ -96,10 +121,10 @@ export default function ExerciseForm({
         setIsLoading(false);
       }
     },
-    [callback, method, path, router, session.data?.user?.token]
+    [callback, method, path, router, session.data?.user?.token],
   );
   return (
-    <Card className="max-w-4xl w-full px-5 py-6">
+    <Card className="max-w-6xl w-full px-5 py-6">
       <CardTitle className="font-bold text-2xl text-center">{header}</CardTitle>
       <CardContent>
         <Form {...form}>
@@ -152,7 +177,13 @@ export default function ExerciseForm({
                 <p className="font-medium text-destructive">{errorMsg}</p>
               )}
               {!isLoading ? (
-                <Button type="submit">{submitText}</Button>
+                <Button
+                  type="submit"
+                  size="lg"
+                  disabled={!form.formState.isDirty}
+                >
+                  {submitText}
+                </Button>
               ) : (
                 <Button disabled>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

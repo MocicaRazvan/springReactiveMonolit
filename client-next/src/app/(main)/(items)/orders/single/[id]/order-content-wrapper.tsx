@@ -35,11 +35,11 @@ export default function OrderContentWrapper({
   );
   const orderResponse = useMemo(() => messages[0]?.content, [messages]);
 
+  if (!orderResponse) return <Loader className="w-full" />;
+
   if (error?.status || (!isAdmin && !isOwner)) {
     notFound();
   }
-
-  if (!orderResponse) return <Loader className="w-full" />;
 
   return (
     <Suspense

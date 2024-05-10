@@ -106,3 +106,7 @@ export function getCSSVariableValue(variableName: string) {
   const modePrefix = isDarkMode ? "dark-" : "";
   return style.getPropertyValue(`--${modePrefix}${variableName}`).trim();
 }
+
+export function roundToDecimalPlaces(value: number, decimalPlaces: number) {
+  return Math.round(value * 10 ** decimalPlaces) / 10 ** decimalPlaces;
+}

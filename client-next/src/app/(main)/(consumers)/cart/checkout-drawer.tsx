@@ -32,12 +32,16 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
+import { IdType } from "@/context/cart-context";
+import { toast } from "@/components/ui/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 
 interface Props {
   userId: string;
   totalPrice: number;
   trainings: TrainingResponse[];
   token: string;
+  clearCartForUser: () => void;
 }
 
 export default function CheckoutDrawer({
@@ -45,6 +49,7 @@ export default function CheckoutDrawer({
   totalPrice,
   trainings,
   token,
+  clearCartForUser,
 }: Props) {
   const router = useRouter();
   const [errorMsg, setErrorMsg] = useState("");
@@ -78,6 +83,22 @@ export default function CheckoutDrawer({
         if (error?.message || error?.status) {
           setErrorMsg("Something went wrong, please try again.");
         } else {
+          clearCartForUser();
+          toast({
+            title: "Order",
+            description: "Order has been placed successfully",
+            variant: "success",
+            action: (
+              <ToastAction
+                altText={"View Order"}
+                onClick={() =>
+                  router.push(`/orders/single/${messages[0].content.id}`)
+                }
+              >
+                View Order
+              </ToastAction>
+            ),
+          });
           router.push(`/users/${userId}/orders`);
         }
       } catch (error) {
@@ -86,7 +107,7 @@ export default function CheckoutDrawer({
         setIsLoading(false);
       }
     },
-    [router, token, trainings, userId]
+    [router, token, trainings, userId],
   );
 
   return (

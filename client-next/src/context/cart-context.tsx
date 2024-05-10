@@ -11,6 +11,7 @@ import {
   useMemo,
   useReducer,
 } from "react";
+import { roundToDecimalPlaces } from "@/lib/utils";
 
 const CART_STORAGE_KEY = "userCarts";
 
@@ -59,7 +60,7 @@ const initialState: CartState = {
 };
 export const cartReducer = (
   state: CartState,
-  action: CartAction
+  action: CartAction,
 ): CartState => {
   const { userId } = action;
   const userCart = state.carts[userId] || { trainings: [], total: 0 };
@@ -68,7 +69,7 @@ export const cartReducer = (
     case "ADD":
       if (!action.payload) return state;
       const trainingExists = userCart.trainings.find(
-        ({ id }) => id === action?.payload?.id
+        ({ id }) => id === action?.payload?.id,
       );
       if (trainingExists) return state;
       const updatedAddCart = {
@@ -84,7 +85,7 @@ export const cartReducer = (
     case "REMOVE":
       if (!action.payload) return state;
       const filteredTrainings = userCart.trainings.filter(
-        ({ id }) => id !== action?.payload?.id
+        ({ id }) => id !== action?.payload?.id,
       );
       return {
         ...state,
@@ -122,7 +123,7 @@ interface Props {
 export const CartProvider = ({ children }: Props) => {
   const [state, dispatch] = useReducer(
     cartReducer,
-    loadCartFromLocalStorage() || initialState
+    loadCartFromLocalStorage() || initialState,
   );
 
   useEffect(() => {
@@ -145,43 +146,46 @@ export const useCart = () => {
   const addToCart = useCallback(
     (userId: string, training: TrainingResponse) =>
       context.dispatch({ type: "ADD", userId, payload: training }),
-    [context]
+    [context],
   );
 
   const removeFromCart = useCallback(
     (userId: string, id: IdType) =>
       context.dispatch({ type: "REMOVE", userId, payload: id }),
-    [context]
+    [context],
   );
 
   const clearCart = useCallback(
     (userId: string) => context.dispatch({ type: "CLEAR", userId }),
-    [context]
+    [context],
   );
 
   const getCartForUser = useCallback(
     (userId: string): UserCart => {
       return context.state.carts[userId] || { trainings: [], total: 0 };
     },
-    [context.state.carts]
+    [context.state.carts],
   );
 
   const cartTotalPrice = useCallback(
     (userId: string) =>
-      context.state.carts[userId]?.trainings.reduce(
-        (acc, { price }) => acc + price,
-        0
-      ),
-    [context.state.carts]
+      roundToDecimalPlaces(
+        context.state.carts[userId]?.trainings.reduce(
+          (acc, { price }) => acc + price,
+          0,
+        ),
+        2,
+      ) || 0,
+    [context.state.carts],
   );
 
   const isInCart = useCallback(
     (userId: string, id: IdType) =>
       getCartForUser(userId).trainings.some(
-        (training) => training.id === id.id
+        (training) => training.id === id.id,
       ),
 
-    [getCartForUser]
+    [getCartForUser],
   );
 
   return {
@@ -206,31 +210,31 @@ export const useCartForUser = (userId: string) => {
 
   const usersCart = useMemo(
     () => getCartForUser(userId),
-    [getCartForUser, userId]
+    [getCartForUser, userId],
   );
 
   const addToCartForUser = useCallback(
     (training: TrainingResponse) => addToCart(userId, training),
-    [addToCart, userId]
+    [addToCart, userId],
   );
 
   const removeFromCartForUser = useCallback(
     (id: IdType) => removeFromCart(userId, id),
-    [removeFromCart, userId]
+    [removeFromCart, userId],
   );
 
   const clearCartForUser = useCallback(
     () => clearCart(userId),
-    [clearCart, userId]
+    [clearCart, userId],
   );
   const isInCartForUser = useCallback(
     (id: IdType) => isInCart(userId, id),
-    [isInCart, userId]
+    [isInCart, userId],
   );
 
   const usersCartTotalPrice = useMemo(
     () => cartTotalPrice(userId),
-    [cartTotalPrice, userId]
+    [cartTotalPrice, userId],
   );
   return {
     usersCart,

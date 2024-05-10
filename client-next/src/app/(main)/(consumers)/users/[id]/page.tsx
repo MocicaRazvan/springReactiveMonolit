@@ -10,8 +10,7 @@ import { useParams, useRouter } from "next/navigation";
 import { UpdateAccordion } from "./update-accordion";
 import { useEffect, useState } from "react";
 import { AlertDialogMakeTrainer } from "./make-trainer-alert";
-import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
-import { AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
 interface UserPageProps {}
 
@@ -55,7 +54,7 @@ export default function UserPage({}: UserPageProps) {
               <AvatarImage
                 src={stateUser?.image || ""}
                 alt={stateUser?.email}
-                className="w-16 h-16"
+                className="w-20 h-20"
               />
               {/* <AvatarFallback>{stateUser?.email}</AvatarFallback> */}
             </Avatar>

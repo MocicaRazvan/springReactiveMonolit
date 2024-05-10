@@ -1,5 +1,4 @@
-import { Avatar } from "@/components/ui/avatar";
-import { AvatarImage } from "@radix-ui/react-avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import UserProfile from "@/components/common/user-profile";
 import Link from "next/link";
@@ -28,7 +27,9 @@ export const NavProfile = ({
             <AvatarImage src={authUser?.image} alt={authUser?.email} />
           </Avatar>
         ) : (
-          authUser?.email
+          <Link href={`/users/${authUser?.id}`} className="hover:underline">
+            {authUser.email}
+          </Link>
         )}
       </div>
       <div

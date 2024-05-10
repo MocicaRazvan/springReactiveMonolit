@@ -3,6 +3,7 @@ import HomeCard from "@/components/home/card";
 import HomeHeader from "@/components/home/header";
 import MoreHome from "@/components/home/more";
 import { Dumbbell, Newspaper, User2 } from "lucide-react";
+import Timeline from "@/components/home/timeline";
 
 export default function Home() {
   const cards = [
@@ -43,6 +44,9 @@ export default function Home() {
       </div>
       <div className="mt-10">
         <MoreHome />
+      </div>
+      <div className="mt-10">
+        <Timeline />
       </div>
     </main>
   );

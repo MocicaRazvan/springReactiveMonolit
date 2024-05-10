@@ -29,6 +29,9 @@ import { fetchStream } from "@/hoooks/fetchStream";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { CustomEntityModel, PostResponse } from "@/types/dto";
+import { toast } from "@/components/ui/use-toast";
+import { ToastAction } from "@/components/ui/toast";
+
 interface Props extends Partial<PostType>, BasicFormProps {}
 
 export default function PostForm({
@@ -77,6 +80,29 @@ export default function PostForm({
         } else if (error?.error) {
           setErrorMsg(error.error);
         } else {
+          const toastAction = (
+            <ToastAction
+              altText="See"
+              onClick={() =>
+                router.push(`/posts/single/${messages[0].content.id}`)
+              }
+            >
+              See Post
+            </ToastAction>
+          );
+          title
+            ? toast({
+                title: values.title,
+                description: "Post updated successfully",
+                variant: "success",
+                action: toastAction,
+              })
+            : toast({
+                title: values.title,
+                description: "Post created successfully",
+                variant: "success",
+                action: toastAction,
+              });
           router.push(`/posts/single/${messages[0].content.id}`);
         }
       } catch (error) {
@@ -89,13 +115,13 @@ export default function PostForm({
         setIsLoading(false);
       }
     },
-    [method, path, router, session.data?.user?.token]
+    [method, path, router, session.data?.user?.token],
   );
   if (!tagsOptions) return null;
   if (!session.data?.user?.token) return null;
   console.log(tagsOptions);
   return (
-    <Card className="max-w-4xl w-full px-5 py-6">
+    <Card className="max-w-6xl w-full px-5 py-6">
       <CardTitle className="font-bold text-2xl text-center">{header}</CardTitle>
       <CardContent>
         <Form {...form}>
@@ -146,7 +172,13 @@ export default function PostForm({
                 <p className="font-medium text-destructive">{errorMsg}</p>
               )}
               {!isLoading ? (
-                <Button type="submit">{submitText}</Button>
+                <Button
+                  type="submit"
+                  size="lg"
+                  disabled={!form.formState.isDirty}
+                >
+                  {submitText}
+                </Button>
               ) : (
                 <Button disabled>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

@@ -25,7 +25,7 @@ import PayDrawer from "./pay-drawer";
 import useWindowSize from "react-use/lib/useWindowSize";
 import Confetti from "react-confetti";
 import { Code } from "lucide-react";
-import { getCSSVariableValue } from "@/lib/utils";
+import { getCSSVariableValue, roundToDecimalPlaces } from "@/lib/utils";
 import { useSearchParam } from "react-use";
 
 interface OrderContentProps extends Omit<OrderContentWrapperProps, "authUser"> {
@@ -144,7 +144,9 @@ export default function OrderContent({
                         <h3 className="font-semibold text-sm">Subtotal</h3>
                       </div>
                       <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-lg">${totalPrice}</h3>
+                        <h3 className="font-semibold text-lg">
+                          ${roundToDecimalPlaces(totalPrice, 2)}
+                        </h3>
                       </div>
                     </div>
                     <Badge

@@ -25,7 +25,7 @@ export default function CustomCloudinaryWidget({
 }: CloudinaryWidgetProps) {
   const form: UseFormReturn = useFormContext();
   const [items, setItems] = useState<string[]>(defaultValues);
-  const plural = type === "image" ? "images" : "videos";
+  const plural = multiple ? type + "s" : type;
   const clientAllowedFormats =
     type === "image" ? ["jpg", "jpeg", "png"] : ["mp4", "mov", "avi"];
 
@@ -72,7 +72,12 @@ export default function CustomCloudinaryWidget({
             )}
           </CldUploadWidget>
         </div>
-        {items.length > 0 && <p> {`${items.length} ${plural} uploaded`}</p>}
+        {items.length > 0 && (
+          <p>
+            {" "}
+            {`${items.length} ${items.length === 1 ? type : plural} uploaded`}
+          </p>
+        )}
       </div>
       {form.formState.errors[formKey]?.message && (
         <p className="text-destructive text-center mt-3 ">

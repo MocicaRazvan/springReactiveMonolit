@@ -14,6 +14,7 @@ import { fetchStream } from "@/hoooks/fetchStream";
 import { Approve, PostResponse, UserDto } from "@/types/dto";
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction } from "react";
+import { toast } from "@/components/ui/use-toast";
 
 interface Props {
   model: Approve;
@@ -43,6 +44,11 @@ export function AlertDialogApprove({
         console.log(resp.error);
       } else {
         callBack();
+        toast({
+          title: model.title,
+          description: "Approved",
+          variant: "success",
+        });
       }
     } catch (error) {
       console.log(error);

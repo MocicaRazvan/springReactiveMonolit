@@ -33,6 +33,7 @@ import {
   AccordionItem,
 } from "@/components/ui/accordion";
 import { useSession } from "next-auth/react";
+import { toast } from "@/components/ui/use-toast";
 
 interface Props {
   user: UserDto;
@@ -79,6 +80,10 @@ export function UpdateAccordion({
         await session.update({
           ...session,
           data: { ...session.data, user: { ...session.data?.user, ...body } },
+        });
+        toast({
+          description: "Profile updated successfully",
+          variant: "success",
         });
         router.refresh();
         router.push("/users/" + id);
@@ -154,7 +159,13 @@ export function UpdateAccordion({
               )}
               <div className="w-full flex items-center justify-center">
                 {!isLoading ? (
-                  <Button type="submit" variant="outline" className="mx-auto">
+                  <Button
+                    disabled={!form.formState.isDirty}
+                    type="submit"
+                    variant="default"
+                    className="mx-auto"
+                    size="lg"
+                  >
                     Update
                   </Button>
                 ) : (

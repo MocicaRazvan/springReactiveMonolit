@@ -104,7 +104,7 @@ export default function HomeHeader() {
         },
       },
     ],
-    [scale4, scale5, scale6, scale8, scale9]
+    [scale4, scale5, scale6, scale8, scale9],
   );
 
   useEffect(() => {
@@ -157,7 +157,7 @@ export default function HomeHeader() {
                   animate={animationControl}
                 >
                   <motion.h1
-                    className=" hidden md:block tracking-tighter font-bold w-full text-center"
+                    className=" hidden md:block tracking-tighter font-bold w-full text-center invert dark:invert-0"
                     style={{ fontSize }}
                   >
                     Are you ready?

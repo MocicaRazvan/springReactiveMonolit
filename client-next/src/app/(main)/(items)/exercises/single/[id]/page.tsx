@@ -3,12 +3,6 @@ import CustomImageCarousel from "@/components/common/custom-image-crousel";
 import CustomVideoCarousel from "@/components/common/custom-video-crousel";
 import AlertDialogDeleteExercise from "@/components/dialogs/exercises/delete-exercise";
 import ExerciseForm from "@/components/forms/exercise-form";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import Loader from "@/components/ui/spinner";
 import useFetchStream from "@/hoooks/useFetchStream";
 import {

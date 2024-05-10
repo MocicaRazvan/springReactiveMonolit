@@ -110,6 +110,7 @@ export default function UpdateTraining({}: Props) {
         submitText="Update Training"
         callback={refetch}
         header={`Update Training: ${trainingState?.title} `}
+        authUser={authUser}
       />
     </section>
   );

@@ -32,7 +32,10 @@ export default function ItemCard<T extends TitleBodyUser>({
     >
       <Image
         alt="Clothing"
-        className={cn("rounded-lg object-cover", onClick && "cursor-pointer")}
+        className={cn(
+          "rounded-lg object-cover w-full",
+          onClick && "cursor-pointer",
+        )}
         height="250"
         src={item.images?.[0] || noImg}
         style={{

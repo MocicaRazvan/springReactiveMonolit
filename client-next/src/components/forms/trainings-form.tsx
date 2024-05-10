@@ -32,9 +32,13 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import MultipleSelector from "../ui/multiple-selector";
 import { fetchStream } from "@/hoooks/fetchStream";
+import { Session } from "next-auth";
+import { toast } from "@/components/ui/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 
 interface Props extends Partial<TrainingType>, BasicFormProps {
   redirect?: boolean;
+  authUser: NonNullable<Session["user"]>;
 }
 
 export default function TrainingsForm({
@@ -49,8 +53,9 @@ export default function TrainingsForm({
   exercises = [],
   price = 0,
   redirect = false,
+  authUser,
 }: Props) {
-  const authUser = useSession().data?.user;
+  // const authUser = useSession().data?.user;
   const {
     messages: userExercises,
     error: exerciseError,
@@ -114,6 +119,30 @@ export default function TrainingsForm({
           setErrorMsg(error.message);
         } else {
           callback?.();
+          const toastAction = (
+            <ToastAction
+              altText="See"
+              onClick={() =>
+                router.push(
+                  `/trainings/single/${messages[0].content.id}?exercises=` +
+                    traininBody.exercises.join(`,`),
+                )
+              }
+            >
+              See Training
+            </ToastAction>
+          );
+          title
+            ? toast({
+                title: values.title,
+                description: "Exercise updated successfully",
+                variant: "success",
+              })
+            : toast({
+                title: values.title,
+                description: "Exercise created successfully",
+                variant: "success",
+              });
           if (redirect) {
             router.push(`/trainer/user/${authUser.id}/trainings`);
           }
@@ -137,7 +166,7 @@ export default function TrainingsForm({
   console.log("exerciseIds", exerciseIds.length);
   console.log("exercises", exercises?.length);
 
-  if (isExerciseFinished && exercises && exercises?.length === 0)
+  if (isExerciseFinished && exerciseIds && exerciseIds?.length === 0)
     return (
       <div>
         <Link
@@ -159,7 +188,7 @@ export default function TrainingsForm({
   }
 
   return (
-    <Card className="max-w-4xl w-full px-5 py-6">
+    <Card className="max-w-6xl w-full px-5 py-6">
       <CardTitle className="font-bold text-2xl text-center">{header}</CardTitle>
       <CardContent>
         <Form {...form}>
@@ -217,7 +246,13 @@ export default function TrainingsForm({
                 <p className="font-medium text-destructive">{errorMsg}</p>
               )}
               {!isLoading ? (
-                <Button type="submit">{submitText}</Button>
+                <Button
+                  type="submit"
+                  size="lg"
+                  disabled={!form.formState.isDirty}
+                >
+                  {submitText}
+                </Button>
               ) : (
                 <Button disabled>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { fetchStream } from "@/hoooks/fetchStream";
 import { TitleBodyUser } from "@/types/dto";
+import { toast } from "@/components/ui/use-toast";
 
 interface Props {
   model: TitleBodyUser;
@@ -42,7 +43,12 @@ export function AlertDialogDelete({
       if (resp.error) {
         console.log(resp.error);
       } else {
-        callBack();
+        toast({
+          title: model.title,
+          description: "Deleted",
+          variant: "destructive",
+        });
+        callBack?.();
       }
     } catch (error) {
       console.log(error);

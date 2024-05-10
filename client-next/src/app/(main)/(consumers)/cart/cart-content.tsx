@@ -76,7 +76,7 @@ export default function CartContent({ user }: Props) {
                 <div className="ml-12 flex-1 space-y-2">
                   <Link
                     href={`/trainings/single/${id}?exercises=${exercises.join(
-                      ","
+                      ",",
                     )}`}
                     className="text-2xl tracking-tighter hover:underline"
                   >
@@ -93,7 +93,7 @@ export default function CartContent({ user }: Props) {
                   </Button>
                 </div>
               </div>
-            )
+            ),
           )}
         </div>
         <div className="col-span-1 md:sticky top-20 right-0 self-start w-full">
@@ -140,6 +140,7 @@ export default function CartContent({ user }: Props) {
                     totalPrice={usersCartTotalPrice}
                     trainings={usersCart.trainings}
                     token={user.token}
+                    clearCartForUser={clearCartForUser}
                   />
                 </div>
               </div>
