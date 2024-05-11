@@ -81,10 +81,12 @@ export default function TrainingsForm({
 
   const exerciseIds = useMemo(
     () =>
-      userExercises.map(({ content: { id, title } }) => ({
-        label: title,
-        value: id.toString(),
-      })),
+      userExercises
+        .map(({ content: { id, title } }) => ({
+          label: title,
+          value: id.toString(),
+        }))
+        .sort((a, b) => a.label.localeCompare(b.label)),
     [JSON.stringify(userExercises)],
   );
 
@@ -188,7 +190,7 @@ export default function TrainingsForm({
   }
 
   return (
-    <Card className="max-w-6xl w-full px-5 py-6">
+    <Card className="max-w-6xl w-full sm:px-2 md:px-5 py-6">
       <CardTitle className="font-bold text-2xl text-center">{header}</CardTitle>
       <CardContent>
         <Form {...form}>

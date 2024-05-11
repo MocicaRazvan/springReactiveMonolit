@@ -54,7 +54,7 @@ export default function Nav() {
 
   return (
     <nav
-      className="min-h-10 md:flex items-center justify-between px-4 py-2 border-b sticky top-0 bg-opacity-60 z-[99]
+      className="min-h-10 md:flex items-center justify-between px-4 py-2 border-b sticky top-0 bg-opacity-60 z-[49]
     w-full border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 flex-wrap 2xl:border-l 2xl:border-r"
     >
       <div className="hidden md:flex items-center justify-between w-full">

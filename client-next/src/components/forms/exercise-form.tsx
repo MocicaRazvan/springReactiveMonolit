@@ -124,7 +124,7 @@ export default function ExerciseForm({
     [callback, method, path, router, session.data?.user?.token],
   );
   return (
-    <Card className="max-w-6xl w-full px-5 py-6">
+    <Card className="max-w-6xl w-full sm:px-2 md:px-5 py-6">
       <CardTitle className="font-bold text-2xl text-center">{header}</CardTitle>
       <CardContent>
         <Form {...form}>

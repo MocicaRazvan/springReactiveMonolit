@@ -84,7 +84,7 @@ export default function Footer() {
         <div className="flex flex-col gap-1">
           <hr className="w-full border-gray-200 dark:border-gray-800" />
           <p className="text-xs text-gray-500 justify-self-center dark:text-gray-400">
-            © 2023 Wellness Co. All rights reserved.
+            © {new Date().getFullYear()} Wellness Co. All rights reserved.
           </p>
         </div>
       </div>

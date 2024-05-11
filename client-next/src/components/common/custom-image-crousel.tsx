@@ -13,7 +13,7 @@ interface Props {
 
 export default function CustomImageCarousel({ images }: Props) {
   return (
-    <div className="w-full flex justify-center items-center">
+    <div className="w-full flex justify-center items-center overflow-hidden">
       <Carousel className="w-full max-w-4xl">
         <CarouselContent>
           {images.map((img, i) => (
@@ -24,7 +24,7 @@ export default function CustomImageCarousel({ images }: Props) {
                   alt="post image"
                   width={400}
                   height={400}
-                  className="w-full max-w-[1000px] max-h-[450px] object-cover"
+                  className="w-full max-w-[1000px] max-h-[450px] object-cover h-full"
                 />
               </div>
             </CarouselItem>

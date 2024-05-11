@@ -5,9 +5,12 @@ import * as TogglePrimitive from "@radix-ui/react-toggle";
 import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
-
-
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 
 const toggleVariants = cva(
   "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors hover:bg-muted hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=on]:border-2 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground",
@@ -30,7 +33,7 @@ const toggleVariants = cva(
       variant: "default",
       size: "sm",
     },
-  }
+  },
 );
 
 export interface ToggleProps
@@ -54,7 +57,7 @@ const Toggle = React.forwardRef<
           />
         </span>
       </TooltipTrigger>
-      <TooltipContent>{tooltip}</TooltipContent>
+      <TooltipContent className="z-10">{tooltip}</TooltipContent>
     </Tooltip>
   </TooltipProvider>
 ));

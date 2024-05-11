@@ -27,7 +27,7 @@ interface EditorToolbarProps {
 const EditorToolbar = ({ editor, sticky }: EditorToolbarProps) => {
   return (
     <Toolbar
-      className="m-0 flex items-center md:justify-between p-2 md:flex-row flex-col justify-center overflow-x-auto"
+      className="m-0 z-10 flex items-center md:justify-between px-0 md:px-2 py-2 md:flex-row flex-col justify-center "
       aria-label="Formatting options"
       sticky={sticky}
     >

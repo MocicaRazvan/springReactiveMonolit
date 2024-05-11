@@ -36,6 +36,7 @@ import {
 import TrainingsForm from "@/components/forms/trainings-form";
 import { Button } from "@/components/ui/button";
 import { useGetTraining } from "@/app/(main)/(items)/trainings/single/hook";
+import ElementHeader from "@/components/common/single/element-header";
 
 export default function TrainingPage() {
   const [trainingState, setTrainingState] = useState<TrainingResponse | null>();
@@ -54,45 +55,6 @@ export default function TrainingPage() {
   );
 
   console.log(exercisesIds);
-
-  // const {
-  //   messages: exercisesMessages,
-  //   error: exercisesError,
-  //   isFinished: isExerciseFinished,
-  // } = useFetchStream<
-  //   PageableResponse<CustomEntityModel<ExerciseResponse>>,
-  //   BaseError
-  // >({
-  //   path: `/exercises/byIds`,
-  //   method: "PATCH",
-  //   authToken: true,
-  //   body: {
-  //     page: 0,
-  //     size: exercisesIds.length,
-  //   },
-  //   arrayQueryParam: { ids: exercisesIds.map(String) },
-  // });
-  //
-  // const { messages, error, isFinished, refetch } = useFetchStream<
-  //   TrainingResponseWithOrderCount,
-  //   BaseError
-  // >({
-  //   path: `/trainings/withOrderCount/${id}`,
-  //   method: "GET",
-  //   authToken: true,
-  // });
-  //
-  // useEffect(() => {
-  //   if (exercisesMessages.length > 0) {
-  //     setExercisesResponse(exercisesMessages.map((e) => e.content.content));
-  //   }
-  // }, [JSON.stringify(exercisesMessages)]);
-  //
-  // useEffect(() => {
-  //   if (messages.length > 0) {
-  //     setTrainingState(messages[0]);
-  //   }
-  // }, [JSON.stringify(messages)]);
 
   const {
     messages,
@@ -140,7 +102,7 @@ export default function TrainingPage() {
     notFound();
   }
 
-  if (!authUser || !messages[0])
+  if (!authUser || !messages[0] || !trainingState)
     return (
       <section className="w-full min-h-[calc(100vh-4rem)] flex items-center justify-center transition-all">
         <Loader />
@@ -183,25 +145,12 @@ export default function TrainingPage() {
           <span className="font-bold">${trainingState.price}</span>
         </div>
       </div>
-      {trainingState?.approved && (
-        <div className="w-40 absolute top-10 left-[270px] flex items-center justify-center gap-4">
-          <LikesDislikes
-            react={react}
-            likes={trainingState?.userLikes || []}
-            dislikes={trainingState?.userDislikes || []}
-            isLiked={isLiked || false}
-            isDisliked={isDisliked || false}
-          />
-        </div>
-      )}
-      <div className="flex flex-col items-center justify-center mb-20 gap-4">
-        <h1 className="text-4xl bold text-center ">{trainingState?.title}</h1>
-      </div>
-      {!trainingState.approved && (
-        <h2 className="absolute top-10 right-[270px] text-2xl font-bold text-center bold text-destructive">
-          Not Approved
-        </h2>
-      )}
+      <ElementHeader
+        elementState={trainingState}
+        react={react}
+        isLiked={isLiked}
+        isDisliked={isDisliked}
+      />
 
       {trainingState?.images?.length > 0 && (
         <CustomImageCarousel images={trainingState?.images} />
@@ -249,34 +198,7 @@ export default function TrainingPage() {
           )}
         </div>
       )}
-      {/*{isOwner && messages[0].orderCount === 0 && exercisesResponse && (*/}
-      {/*  <Accordion*/}
-      {/*    type="single"*/}
-      {/*    collapsible*/}
-      {/*    className="w-1/2 mx-auto mt-10 z-50"*/}
-      {/*  >*/}
-      {/*    <AccordionItem value="item-1">*/}
-      {/*      <AccordionTrigger>Update Training</AccordionTrigger>*/}
-      {/*      <AccordionContent>*/}
-      {/*        <TrainingsForm*/}
-      {/*          path={`/trainings/update/${trainingState.id}`}*/}
-      {/*          method="PUT"*/}
-      {/*          title={trainingState.title}*/}
-      {/*          body={trainingState.body}*/}
-      {/*          images={trainingState.images}*/}
-      {/*          exercises={exercisesResponse.map(({ title, id }) => ({*/}
-      {/*            label: title,*/}
-      {/*            value: id.toString(),*/}
-      {/*          }))}*/}
-      {/*          price={trainingState.price}*/}
-      {/*          submitText="Update Training"*/}
-      {/*          callback={refetch}*/}
-      {/*          header={"Update Training"}*/}
-      {/*        />*/}
-      {/*      </AccordionContent>*/}
-      {/*    </AccordionItem>*/}
-      {/*  </Accordion>*/}
-      {/*)}*/}
+
       <div className="my-10 mt-24">
         <h1 className="font-bold text-4xl tracking-tight text-center">
           Exercises of the training

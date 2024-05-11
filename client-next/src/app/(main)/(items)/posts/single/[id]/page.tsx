@@ -22,6 +22,7 @@ import Link from "next/link";
 import AlertDialogDeletePost from "@/components/dialogs/posts/delete-post";
 import { useGetPost } from "@/app/(main)/(items)/posts/single/hook";
 import { Button } from "@/components/ui/button";
+import ElementHeader from "@/components/common/single/element-header";
 
 export default function SinglePost() {
   // const [postState, setPostState] = useState<PostResponse | null>(null);
@@ -89,7 +90,7 @@ export default function SinglePost() {
     notFound();
   }
 
-  if (!post || !authUser)
+  if (!post || !authUser || !postState)
     return (
       <section className="w-full min-h-[calc(100vh-4rem)] flex items-center justify-center transition-all">
         <Loader />
@@ -109,23 +110,12 @@ export default function SinglePost() {
 
   return (
     <section className="w-full  min-h-[calc(100vh-4rem)] flex-col items-center justify-center transition-all px-6 py-10 relative ">
-      {post?.approved && (
-        <div className="w-40 absolute top-10 left-[270px] flex items-center justify-center gap-4">
-          <LikesDislikes
-            react={react}
-            likes={postState?.userLikes || []}
-            dislikes={postState?.userDislikes || []}
-            isLiked={isLiked || false}
-            isDisliked={isDisliked || false}
-          />
-        </div>
-      )}
-      <h1 className="text-4xl bold text-center mb-20">{postState?.title}</h1>
-      {!post.approved && (
-        <h2 className="absolute top-10 right-[270px] text-2xl font-bold text-center bold text-destructive">
-          Not Approved
-        </h2>
-      )}
+      <ElementHeader
+        elementState={postState}
+        react={react}
+        isLiked={isLiked}
+        isDisliked={isDisliked}
+      />
       {post?.images.length > 0 && <CustomImageCarousel images={post?.images} />}
       <div className="mt-20 px-14">
         <div

@@ -42,7 +42,7 @@ export default function TrainingsList({ userId }: Props) {
               });
             }}
           >
-            <PlusSquareIcon /> Add To Cart
+            <PlusSquareIcon className="mr-2" /> Add To Cart
           </Button>
         ) : (
           <Button onClick={() => router.push("/cart")}>

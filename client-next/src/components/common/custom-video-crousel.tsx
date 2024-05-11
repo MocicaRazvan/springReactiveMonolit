@@ -14,7 +14,7 @@ interface Props {
 
 export default function CustomVideoCarousel({ videos }: Props) {
   return (
-    <div className="w-full flex justify-center items-center">
+    <div className="w-full flex justify-center items-center overflow-hidden">
       <Carousel className="w-full max-w-4xl">
         <CarouselContent>
           {videos.map((video, i) => (

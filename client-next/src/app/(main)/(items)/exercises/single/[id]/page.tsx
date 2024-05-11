@@ -15,6 +15,7 @@ import { notFound, useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useGetExercise } from "@/app/(main)/(items)/exercises/single/hook";
 import { Button } from "@/components/ui/button";
+import ElementHeader from "@/components/common/single/element-header";
 
 export default function SingleExercise() {
   // const [exerciseState, setExerciseState] = useState<ExerciseResponse | null>(
@@ -74,12 +75,7 @@ export default function SingleExercise() {
 
   return (
     <section className="w-full  min-h-[calc(100vh-4rem)] flex-col items-center justify-center transition-all px-6 py-10 relative pb-14">
-      <h1 className="text-4xl bold text-center mb-20">{exercise.title}</h1>
-      {!exercise.approved && (
-        <h2 className="absolute top-10 right-[270px] text-2xl font-bold text-center bold text-destructive">
-          Not Approved
-        </h2>
-      )}
+      <ElementHeader elementState={exercise} />
       {exercise?.videos?.length > 0 && (
         <CustomVideoCarousel videos={exercise?.videos} />
       )}

@@ -30,7 +30,7 @@ export const DataTablePagination = memo(function DataTablePagination({
   sizeOptions = [5, 10, 20, 30, 40],
 }: DataTablePaginationProps) {
   return (
-    <div className="flex items-center justify-end px-2">
+    <div className="flex items-center justify-end px-2 mt-2">
       <div className="flex items-center space-x-6 lg:space-x-8">
         <div className="flex items-center space-x-2">
           <p className="text-sm font-medium">Page Size</p>
@@ -115,11 +115,11 @@ export const DataTablePagination = memo(function DataTablePagination({
       </div>
     </div>
   );
-},
-areEqual);
+}, areEqual);
+
 function areEqual(
   prevProps: DataTablePaginationProps,
-  nextProps: DataTablePaginationProps
+  nextProps: DataTablePaginationProps,
 ) {
   return (
     isDeepEqual(prevProps.pageInfo, nextProps.pageInfo) &&

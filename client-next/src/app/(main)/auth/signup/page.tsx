@@ -31,6 +31,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
 import { registerSubmit } from "@/actions/froms";
+import { PasswordInput } from "@/components/ui/password-input";
 
 export default function SignUp() {
   const form = useForm<RegisterType>({
@@ -58,7 +59,7 @@ export default function SignUp() {
 
   return (
     <main className="w-full min-h-[calc(100vh-4rem)] flex items-center justify-center transition-all">
-      <Card className="w-[350px]">
+      <Card className="w-[500px]">
         <CardHeader>
           <CardTitle className="text-center">Sign Up</CardTitle>
         </CardHeader>
@@ -129,10 +130,11 @@ export default function SignUp() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>
+                      Password (Must be at least 4 characters)
+                    </FormLabel>
                     <FormControl>
-                      <Input
-                        type="password"
+                      <PasswordInput
                         {...field}
                         onFocus={() => {
                           if (errorMsg) setErrorMsg("");
@@ -150,8 +152,7 @@ export default function SignUp() {
                   <FormItem>
                     <FormLabel>Confirm Password</FormLabel>
                     <FormControl>
-                      <Input
-                        type="password"
+                      <PasswordInput
                         {...field}
                         onFocus={() => {
                           if (errorMsg) setErrorMsg("");
@@ -166,7 +167,7 @@ export default function SignUp() {
                 <p className="font-medium text-destructive">{errorMsg}</p>
               )}
               {!isLoading ? (
-                <Button type="submit">Sign In</Button>
+                <Button type="submit">Sign Up</Button>
               ) : (
                 <Button disabled>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -177,8 +178,8 @@ export default function SignUp() {
           </Form>
         </CardContent>
         <CardFooter>
-          <Link href="/auth/signup" className="text-sm italic">
-            Don&apos;t have an account? Sign Up
+          <Link href="/auth/signin" className="text-sm italic">
+            Already have an account? Sign In
           </Link>
         </CardFooter>
       </Card>
