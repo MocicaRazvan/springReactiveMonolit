@@ -60,9 +60,9 @@ export default function MoreHome() {
       >
         <Button
           variant="default"
-          className="text-2xl px-5 py-3"
+          className="text-2xl px-5 py-3 cursor-default"
           onClick={() => {
-            router.push("/auth/signin");
+            // router.push("/auth/signin");
           }}
         >
           Don&apos;t wait, start now!

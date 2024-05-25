@@ -135,11 +135,13 @@ export default function SinglePost() {
           <p className="group-hover:translate-y-[-10px]">{user.email}</p>
         </div>
       </Link>
-      <Suspense fallback={<Loader className="w-full h-full" />}>
-        <PostComments postId={post.id} />
-      </Suspense>
+      {postState.approved && (
+        <Suspense fallback={<Loader className="w-full h-full" />}>
+          <PostComments postId={post.id} />
+        </Suspense>
+      )}
       {isOwnerOrAdmin && (
-        <div className="sticky bottom-3  flex items-center justify-center gap-4">
+        <div className="sticky bottom-3  flex items-center justify-center gap-4 mt-5">
           <AlertDialogDeletePost
             post={post}
             token={session.data?.user?.token}

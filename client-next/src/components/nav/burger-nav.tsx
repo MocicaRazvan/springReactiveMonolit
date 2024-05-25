@@ -110,13 +110,23 @@ const BurgerNav = memo<Props>(
               authUser={authUser}
               setSheetOpen={setSheetOpen}
             />
-            {!isAdmin && (
+            {!isAdmin && authUser && (
               <div className="mt-4">
                 <Link
                   href={`/users/${authUser?.id}/orders`}
                   className="font-bold hover:underline text-lg"
                 >
                   Your Orders
+                </Link>
+              </div>
+            )}
+            {!authUser && (
+              <div className="mt-5">
+                <Link
+                  href="/auth/signin"
+                  className="font-bold hover:underline text-lg"
+                >
+                  Sign In
                 </Link>
               </div>
             )}

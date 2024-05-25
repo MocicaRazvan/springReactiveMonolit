@@ -1,17 +1,11 @@
 "use client";
-import {
-  CustomEntityModel,
-  PageInfo,
-  PageableResponse,
-  UserDto,
-  ExerciseResponse,
-} from "@/types/dto";
-import { DataTable, Pagination } from "@/components/data-table/data-table";
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { UserDto } from "@/types/dto";
+import { DataTable } from "@/components/data-table/data-table";
+import { Suspense, useMemo, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
-import { ColumnDef, Sorting } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ColumnDef } from "@tanstack/react-table";
+import { MoreHorizontal } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {

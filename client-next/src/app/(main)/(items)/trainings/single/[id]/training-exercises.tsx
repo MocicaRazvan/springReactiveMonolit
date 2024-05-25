@@ -10,10 +10,14 @@ import { useState } from "react";
 interface Props {
   exercises: ExerciseResponse[];
 }
+
 export default function TrainingExercises({ exercises }: Props) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const currentExercise = exercises[currentIndex];
+  if (!currentExercise) {
+    return null;
+  }
   return (
     <div className="mt-10">
       <div className="mb-5">

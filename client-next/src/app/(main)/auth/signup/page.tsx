@@ -178,7 +178,7 @@ export default function SignUp() {
           </Form>
         </CardContent>
         <CardFooter>
-          <Link href="/auth/signin" className="text-sm italic">
+          <Link href="/auth/signin" className="text-sm italic hover:underline">
             Already have an account? Sign In
           </Link>
         </CardFooter>

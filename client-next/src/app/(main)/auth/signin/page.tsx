@@ -48,7 +48,7 @@ export default function SingIn() {
     });
     setIsLoading(false);
     if (result?.error) {
-      setErrorMsg("Registration Failed");
+      setErrorMsg("Credentials Are Not Valid !");
     } else {
       router.push("/");
     }
@@ -116,7 +116,7 @@ export default function SingIn() {
           </Form>
         </CardContent>
         <CardFooter>
-          <Link href="/auth/signup" className="text-sm italic">
+          <Link href="/auth/signup" className="text-sm italic hover:underline">
             Don&apos;t have an account? Sign Up
           </Link>
         </CardFooter>

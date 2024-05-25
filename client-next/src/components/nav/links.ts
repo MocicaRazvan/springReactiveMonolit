@@ -77,7 +77,7 @@ export const createOrdersLinks: createLinks = ({ id }): LinkNav[] => [
   {
     text: "Your Orders",
     href: `/users/${id}/orders`,
-    role: "ROLE_ADMIN",
+    role: "ROLE_USER",
   },
   {
     text: "All Orders",

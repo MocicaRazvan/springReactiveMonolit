@@ -101,7 +101,7 @@ export default function Nav() {
             links={trainingsLinks}
             authUser={authUser}
           />
-          {!isAdmin && (
+          {!isAdmin && authUser && (
             <Link
               href={`/users/${authUser?.id}/orders`}
               className="font-bold hover:underline"
@@ -137,6 +137,13 @@ export default function Nav() {
                 showProfile={showProfile}
               />
             </>
+          )}
+          {!authUser && (
+            <div>
+              <Link href="/auth/signin" className="font-bold hover:underline">
+                Sign In
+              </Link>
+            </div>
           )}
           <ModeToggle />
         </div>

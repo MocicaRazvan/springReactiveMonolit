@@ -6,8 +6,10 @@ export default withAuth({
     authorized: ({ req }) => {
       const sessionToken = req.cookies.get("next-auth.session-token");
       console.log(sessionToken);
-      if (sessionToken) return true;
-      else return false;
+      if (req.nextUrl.pathname === "/") {
+        return true;
+      }
+      return !!sessionToken;
     },
   },
   pages: {

@@ -194,6 +194,12 @@ export default function GridList<T extends TitleBodyUser>({
               />
             </div>
           ))}
+          {!isFinished && items.length > 0 && (
+            <div className="w-full flex flex-col items-center justify-center">
+              <Loader className="w-full" />
+              <p>Getting more...</p>
+            </div>
+          )}
         </div>
         <div className={cn("mt-6", items.length === 0 && "hidden")}>
           <DataTablePagination

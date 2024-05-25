@@ -168,6 +168,11 @@ export function useFetchStream<T = any, E extends BaseError = BaseError>({
     setMessages([]);
     setError(null);
     setIsFinished(false);
+    if (authToken && !session?.user?.token) {
+      return () => {
+        console.log("No token");
+      };
+    }
     const token = authToken && session?.user?.token ? session.user.token : "";
     const abortController = new AbortController();
 
